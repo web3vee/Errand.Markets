@@ -57,3 +57,6 @@ export default async function MarketHome({ params }: { params: Promise<Params> }
     </>
   );
 }
+
+// Market config comes from the database; re-render at most every 5 minutes so admin edits show up.
+export const revalidate = 300;

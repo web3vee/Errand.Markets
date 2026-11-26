@@ -33,6 +33,9 @@ export async function SiteHeader({ locale, market, markets }: { locale: string; 
         </nav>
         <div className="flex items-center gap-1">
           <MarketSwitcher locale={locale} current={market} markets={markets} />
+          <Link href={`${home}/sign-in`} className="hidden min-h-11 items-center rounded-md px-3 text-small font-medium text-ink-2 hover:bg-sunken hover:text-ink sm:inline-flex">
+            {t('nav.signIn')}
+          </Link>
           <Button asChild variant="ink" className="hidden sm:inline-flex">
             <Link href={`${home}/get-started?intent=post`}>{t('hero.ctaPost')}</Link>
           </Button>
@@ -44,6 +47,7 @@ export async function SiteHeader({ locale, market, markets }: { locale: string; 
               {nav.map((n) => (
                 <a key={n.href} href={n.href} className="flex min-h-11 items-center rounded-sm px-3 text-body hover:bg-sunken">{n.label}</a>
               ))}
+              <Link href={`${home}/sign-in`} className="flex min-h-11 items-center rounded-sm px-3 text-body hover:bg-sunken">{t('nav.signIn')}</Link>
               <Link href={`${home}/get-started?intent=post`} className="flex min-h-11 items-center rounded-sm px-3 text-body font-medium text-accent-text hover:bg-sunken">
                 {t('hero.ctaPost')}
               </Link>

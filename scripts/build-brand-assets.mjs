@@ -2,7 +2,7 @@
 //  - public/brand/mark.svg (vector trace, fill=currentColor)
 //  - PWA icons (any + maskable) and favicon PNGs
 // Run: pnpm brand:icons
-import { readFile, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import potrace from 'potrace';
 import sharp from 'sharp';
 

@@ -1,5 +1,5 @@
 import { defineRouting } from 'next-intl/routing';
-import { uiLanguages } from '@/modules/markets/source';
+import { uiLanguages } from '@/modules/markets/static-routing';
 
 /** Pseudo-locales for layout QA: en-XA (long, accented) and ar-XB (right-to-left). Never enabled in production. */
 export const PSEUDO_LOCALES = ['en-XA', 'ar-XB'] as const;
