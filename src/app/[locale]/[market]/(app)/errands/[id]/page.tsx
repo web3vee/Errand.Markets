@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation';
 import { currencySymbol } from '@/lib/money';
 import { parseMarketPhone } from '@/lib/phone';
 import { minorToInput } from '@/modules/errands/domain/amount';
-import { getErrandForParticipant, stopAreas } from '@/modules/errands/service';
+import { feeScheduleFor, getErrandForParticipant, stopAreas } from '@/modules/errands/service';
+import { PriceSummary, rateLabel } from '@/ui/pricing/price-summary';
 import { listErrandConversations, participantNames } from '@/modules/messaging/service';
 import { defaultDb, requireAccount } from '@/server/context';
 import { money } from '@/server/format';
@@ -45,6 +46,8 @@ export default async function ErrandDetail({ params, searchParams }: {
   const myThread = threads.find((c) => (isRunner ? c.runnerId === account.id : c.runnerId === e.runnerId));
   const statusLabel = e.reviewState === 'pending_review' ? t('errandStatus.pending_review') : t(`errandStatus.${e.status}`);
   const row = 'border-t border-line py-4';
+  // The fee schedule frozen at publication (or the current one for drafts).
+  const fees = await feeScheduleFor(db, market.id, e.feeScheduleId);
 
   return (
     <Container className="max-w-[48rem] py-12">
@@ -121,6 +124,14 @@ export default async function ErrandDetail({ params, searchParams }: {
           </div>
         ) : null}
       </dl>
+
+      {isCustomer ? (
+        <div className="mt-6">
+          <PriceSummary testId="errand-summary" errandFeeMinor={e.priceMinor} itemEstimateMinor={e.itemEstimateMinor} fees={fees} rounding={market.roundingMode}
+            currency={market.currency} formatLocale={market.formatLocale}
+            labels={{ title: t('pricing.title'), errandFee: t('pricing.errandFee'), serviceFee: t('pricing.serviceFee', { rate: rateLabel(fees.serviceFeeBps, market.formatLocale) }), items: t('pricing.items'), total: t('pricing.total'), note: t('pricing.whenPaid') }} />
+        </div>
+      ) : null}
 
       {isCustomer && e.status === 'draft' && e.reviewState === 'none' ? (
         <form action={publishDraftAction.bind(null, locale, slug, id)} className="mt-6"><Button type="submit" size="lg">{t('errands.publish')}</Button></form>

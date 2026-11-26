@@ -94,6 +94,18 @@ describe.each(['NG', 'VC'] as const)('marketplace — %s', (code) => {
   });
 });
 
+describe('launch fee decisions (2026-11-26)', () => {
+  it.each(['NG', 'VC'] as const)('%s: 5%% service fee, no commission, no minimum price; errands freeze the schedule they were posted under', async (code) => {
+    const m = await market(code);
+    const [f] = await db().select().from(marketFeeSchedules).where(and(eq(marketFeeSchedules.marketId, m.id), sql`effective_to is null`));
+    expect(f).toMatchObject({ serviceFeeBps: 500, commissionBps: 0, minErrandPriceMinor: null });
+    const c = await makeUser(code);
+    const { errandId } = await post(code, c.id);
+    const [e] = await db().select().from(errands).where(eq(errands.id, errandId));
+    expect(e!.feeScheduleId).toBe(f!.id);
+  });
+});
+
 describe('posting rules', () => {
   it('rejects a pin outside the chosen area and an empty drop-off', async () => {
     const c = await makeUser('NG');

@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound, redirect } from 'next/navigation';
-import { openErrandForRunner } from '@/modules/errands/service';
+import { feeScheduleFor, openErrandForRunner } from '@/modules/errands/service';
+import { quote } from '@/modules/pricing/domain/quote';
 import { defaultDb } from '@/server/context';
 import { money } from '@/server/format';
 import { requireVerifiedRunner } from '@/server/runner-guard';
@@ -34,13 +35,17 @@ export default async function OpenErrand({ params, searchParams }: { params: Pro
     );
   }
   const err = (await searchParams).error;
+  // What the Runner takes home (price − commission; commission is 0 at launch). Items are reimbursed separately.
+  const earns = quote({ currency: market.currency.code, minorUnit: market.currency.minorUnit, rounding: market.roundingMode, errandFeeMinor: e.priceMinor,
+    itemEstimateMinor: 0n, fees: await feeScheduleFor(defaultDb(), market.id, e.feeScheduleId), taxRules: [] }).runnerEarningsMinor;
   return (
     <Container className="max-w-[44rem] py-12">
       <Link href={`/${locale}/${slug}/runner/errands`} className="inline-flex min-h-11 items-center text-small underline">{t('common.back')}</Link>
       <p className="mt-2 text-small text-ink-3">{t(e.categoryNameKey)}</p>
       <h1 className="text-h1 text-balance">{e.title}</h1>
-      <p className="mt-4 text-h2 tabular-nums">{money(market, e.priceMinor)}</p>
-      {e.requiresPurchase ? <p className="text-small text-ink-3">{t('runnerMarket.itemsEstimate', { amount: money(market, e.itemEstimateMinor) })}</p> : null}
+      <p className="mt-4 text-small text-ink-3">{t('pricing.youEarn')}</p>
+      <p className="text-h2 tabular-nums" data-testid="runner-earns">{money(market, earns)}</p>
+      {e.requiresPurchase ? <p className="text-small text-ink-3">{t('pricing.itemsReimbursed', { amount: money(market, e.itemEstimateMinor) })}</p> : null}
       {err ? <div className="mt-4"><Notice tone="danger">{t.has(`chat.errors.${err}`) ? t(`chat.errors.${err}` as never) : t('common.error')}</Notice></div> : null}
       <dl className="mt-8 border-b border-line">
         {e.description ? <div className="border-t border-line py-4"><dd className="whitespace-pre-line">{e.description}</dd></div> : null}

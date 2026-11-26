@@ -1,11 +1,15 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useActionState, useMemo, useState } from 'react';
+import { useActionState, useState } from 'react';
+import { formatMoney } from '@/lib/money';
 import { Checkbox, Field, Input, Notice, Radio, Select, Textarea } from '@/ui/forms/fields';
 import { uploadImage } from '@/ui/forms/image-upload';
 import { emptyLocation, LocationFields, type AreaOption, type LocationValue } from '@/ui/forms/location-fields';
 import { SubmitButton } from '@/ui/forms/submit-button';
+import { parseAmountToMinor } from '@/modules/errands/domain/amount';
+import { deserializeFees, PriceSummary, rateLabel, type SerializedFees } from '@/ui/pricing/price-summary';
+import type { RoundingMode } from '@/modules/pricing/domain/quote';
 import type { PostState } from './actions';
 
 type Category = { key: string; name: string; description: string; purchaseAllowed: boolean };
@@ -13,12 +17,15 @@ type Props = {
   action: (s: PostState, f: FormData) => Promise<PostState>;
   categories: Category[]; areas: AreaOption[]; currencyCode: string; currencySymbol: string; minPriceLabel: string | null;
   timezoneLabel: string; initialCategory: string | null; formatLocale: string; minorUnit: number;
+  fees: SerializedFees; rounding: RoundingMode; displaySymbol: string | null;
 };
 type Item = { name: string; qty: number; price: string };
 
 export function PostErrandForm(p: Props) {
   const t = useTranslations('post');
+  const tp = useTranslations('pricing');
   const [state, formAction] = useActionState(p.action, null);
+  const [priceInput, setPriceInput] = useState('');
   const [categoryKey, setCategoryKey] = useState(p.initialCategory ?? '');
   const category = p.categories.find((c) => c.key === categoryKey);
   const [buying, setBuying] = useState(false);
@@ -34,12 +41,11 @@ export function PostErrandForm(p: Props) {
   const [publish, setPublish] = useState(true);
   const requiresPurchase = buying && !!category?.purchaseAllowed;
 
-  // Rough on-device total for display only — the server recomputes exactly in minor units.
-  const itemTotal = useMemo(() => {
-    const dec = new Intl.NumberFormat(p.formatLocale).formatToParts(1.1).find((x) => x.type === 'decimal')?.value ?? '.';
-    const n = items.reduce((s, i) => s + (Number(i.price.replace(new RegExp(`[^\\d${dec === '.' ? '\\.' : dec}]`, 'g'), '').replace(dec, '.')) || 0) * i.qty, 0);
-    return new Intl.NumberFormat(p.formatLocale, { minimumFractionDigits: 0, maximumFractionDigits: p.minorUnit }).format(n);
-  }, [items, p.formatLocale, p.minorUnit]);
+
+  const priceMinor = parseAmountToMinor(priceInput, p.minorUnit, p.formatLocale) ?? 0n;
+  const itemsMinor = requiresPurchase
+    ? items.reduce((s, i) => s + (parseAmountToMinor(i.price, p.minorUnit, p.formatLocale) ?? 0n) * BigInt(i.qty), 0n) : 0n;
+  const fees = deserializeFees(p.fees);
 
   const toStop = (kind: string, v: LocationValue) => ({
     kind, serviceAreaId: v.serviceAreaId, lat: v.lat, lng: v.lng, pinSource: v.pinSource, landmark: v.landmark,
@@ -115,7 +121,7 @@ export function PostErrandForm(p: Props) {
               </ul>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <button type="button" className="inline-flex min-h-11 items-center rounded-md border border-line-strong px-4 text-small font-medium hover:bg-sunken" onClick={() => setItems([...items, { name: '', qty: 1, price: '' }])}>{t('addItem')}</button>
-                <p className="text-small text-ink-2" aria-live="polite">{t('itemTotal', { amount: `${p.currencySymbol}${itemTotal}` })}</p>
+                <p className="text-small text-ink-2" aria-live="polite">{t('itemTotal', { amount: formatMoney(itemsMinor, { code: p.currencyCode, minorUnit: p.minorUnit, displaySymbol: p.displaySymbol }, p.formatLocale) })}</p>
               </div>
             </>
           ) : null}
@@ -145,12 +151,18 @@ export function PostErrandForm(p: Props) {
       </fieldset>
 
       <div className="flex flex-col gap-5">
-        <Field id="price" label={`${t('price')} (${p.currencySymbol})`} hint={<>{t('priceHint', { code: p.currencyCode })}{p.minPriceLabel ? ` ${t('priceMin', { amount: p.minPriceLabel })}` : ''}</>}>
+        <Field id="price" label={`${t('price')} (${p.currencySymbol})`} hint={<>{t('priceHint', { code: p.currencyCode, rate: rateLabel(p.fees.serviceFeeBps, p.formatLocale) })}{p.minPriceLabel ? ` ${t('priceMin', { amount: p.minPriceLabel })}` : ''}</>}>
           <div className="flex items-stretch">
             <span className="inline-flex items-center rounded-s-md border border-e-0 border-line-strong bg-sunken px-3 text-small text-ink-2" aria-hidden>{p.currencySymbol}</span>
-            <Input id="price" name="price" inputMode="decimal" required dir="ltr" className="rounded-s-none text-start text-h3 tabular-nums" aria-describedby="price-hint" />
+            <Input id="price" name="price" inputMode="decimal" required dir="ltr" className="rounded-s-none text-start text-h3 tabular-nums" aria-describedby="price-hint"
+              value={priceInput} onChange={(e) => setPriceInput(e.target.value)} />
           </div>
         </Field>
+        <div aria-live="polite">
+          <PriceSummary testId="post-summary" errandFeeMinor={priceMinor} itemEstimateMinor={itemsMinor} fees={fees} rounding={p.rounding} formatLocale={p.formatLocale}
+            currency={{ code: p.currencyCode, minorUnit: p.minorUnit, displaySymbol: p.displaySymbol }}
+            labels={{ title: tp('title'), errandFee: tp('errandFee'), serviceFee: tp('serviceFee', { rate: rateLabel(p.fees.serviceFeeBps, p.formatLocale) }), items: tp('items'), total: tp('total'), note: tp('whenPaid') }} />
+        </div>
         <fieldset>
           <legend className="text-small font-medium">{t('when')}</legend>
           <div className="mt-2 grid gap-2 sm:grid-cols-2">

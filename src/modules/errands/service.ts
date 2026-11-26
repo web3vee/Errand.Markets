@@ -301,13 +301,13 @@ export async function openErrandForRunner(db: Db, runnerId: string, marketId: st
   const [card] = (await browseOpenErrands(db, runnerId, { marketId, allAreas: true, limit: 50 })).filter((c) => c.id === errandId);
   if (!card) return null;
   return asSystem(db, 'errands.openForRunner (safe projection)', async (tx) => {
-    const [e] = await tx.select({ description: errands.description, version: errands.version }).from(errands).where(eq(errands.id, errandId));
+    const [e] = await tx.select({ description: errands.description, version: errands.version, feeScheduleId: errands.feeScheduleId }).from(errands).where(eq(errands.id, errandId));
     const items = await tx.select({ name: errandItems.name, qty: errandItems.qty, estUnitPriceMinor: errandItems.estUnitPriceMinor }).from(errandItems).where(eq(errandItems.errandId, errandId));
     const photos = await tx.select({ id: media.id }).from(media).where(and(eq(media.errandId, errandId), eq(media.kind, 'errand_reference')));
     const kinds = await tx.select({ kind: errandStops.kind, nameKey: serviceAreas.nameKey }).from(errandStops)
       .innerJoin(places, eq(places.id, errandStops.placeId)).innerJoin(serviceAreas, eq(serviceAreas.id, places.serviceAreaId))
       .where(eq(errandStops.errandId, errandId)).orderBy(asc(errandStops.seq));
-    return { ...card, description: e!.description, items, photoIds: photos.map((p) => p.id), stops: kinds };
+    return { ...card, description: e!.description, feeScheduleId: e!.feeScheduleId, items, photoIds: photos.map((p) => p.id), stops: kinds };
   });
 }
 
@@ -346,3 +346,15 @@ export async function areasWithBoundaries(db: DbLike, marketId: string) {
   return rows.map((a) => ({ id: a.id, slug: a.slug, nameKey: a.nameKey, center: { lat: Number(a.centerLat), lng: Number(a.centerLng) }, boundary: a.boundary as AreaGeometry | null, boundaryStatus: a.boundaryStatus }));
 }
 export { areaContaining };
+
+/** Fee schedule as the pricing domain expects it (a specific version, or the market's current one). */
+export async function feeScheduleFor(db: DbLike, marketId: string, scheduleId: string | null) {
+  const [row] = scheduleId
+    ? await db.select().from(marketFeeSchedules).where(eq(marketFeeSchedules.id, scheduleId))
+    : await db.select().from(marketFeeSchedules).where(and(eq(marketFeeSchedules.marketId, marketId), isNull(marketFeeSchedules.effectiveTo)));
+  if (!row) throw new Error('fee schedule not found');
+  return {
+    id: row.id, commissionBps: row.commissionBps, serviceFeeBps: row.serviceFeeBps, serviceFeeFixedMinor: row.serviceFeeFixedMinor,
+    serviceFeeMinMinor: row.serviceFeeMinMinor, serviceFeeMaxMinor: row.serviceFeeMaxMinor,
+  };
+}

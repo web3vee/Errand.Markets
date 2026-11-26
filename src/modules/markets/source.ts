@@ -7,7 +7,7 @@ import { MARKET_SEED } from '../../../db/seed/markets';
 import { and, isNull } from 'drizzle-orm';
 import { MarketConfig } from './domain/schema';
 
-export type MarketRecord = MarketConfig & { id: string | null; kycAutoApprove: boolean };
+export type MarketRecord = MarketConfig & { id: string | null; kycAutoApprove: boolean; roundingMode: 'half_up' | 'half_even' };
 
 /** Where market configuration is read from. Business logic depends on this, not on a backend. */
 export interface MarketConfigSource {
@@ -18,7 +18,7 @@ export interface MarketConfigSource {
 
 /** Fallback when no database is configured (e.g. a static preview build). Same data as the DB seed. */
 class SeedMarketSource implements MarketConfigSource {
-  private readonly all = MARKET_SEED.map((m) => ({ ...MarketConfig.parse(m), id: null, kycAutoApprove: false }));
+  private readonly all = MARKET_SEED.map((m) => ({ ...MarketConfig.parse(m), id: null, kycAutoApprove: false, roundingMode: 'half_up' as const }));
   async list() { return this.all.filter((m) => m.status === 'active'); }
   async bySlug(slug: string) { return this.all.find((m) => m.slug === slug && m.status === 'active') ?? null; }
   async byCode(code: string) { return this.all.find((m) => m.code === code && m.status === 'active') ?? null; }
@@ -40,7 +40,7 @@ class DbMarketSource implements MarketConfigSource {
       geoCountries: m.geoCountries,
       serviceAreas: areas.filter((a) => a.marketId === m.id).map((a) => ({ slug: a.slug, nameKey: a.nameKey, island: a.island, active: a.active })),
       categories: cats.filter((c) => c.marketId === m.id).map((c) => ({ key: c.key, nameKey: c.nameKey, descriptionKey: c.descriptionKey, purchaseAllowed: c.purchaseAllowed, sort: c.sort, active: c.active })),
-    })).map((cfg, i) => ({ ...cfg, id: rows[i]!.id, kycAutoApprove: rows[i]!.kycAutoApprove }));
+    })).map((cfg, i) => ({ ...cfg, id: rows[i]!.id, kycAutoApprove: rows[i]!.kycAutoApprove, roundingMode: (rows[i]!.roundingMode === 'half_even' ? 'half_even' : 'half_up') as 'half_up' | 'half_even' }));
   });
   async list() { return this.load(); }
   async bySlug(slug: string) { return (await this.load()).find((m) => m.slug === slug) ?? null; }

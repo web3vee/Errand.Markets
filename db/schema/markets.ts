@@ -30,6 +30,8 @@ export const markets = pgTable('markets', {
   smsProvider: text('sms_provider').notNull(),
   mapsProvider: text('maps_provider').notNull(),
   geoCountries: text('geo_countries').array().notNull(),
+  /** How fee/tax amounts round to the currency's minor unit: half_up | half_even. */
+  roundingMode: text('rounding_mode').notNull().default('half_up'),
   /** Q8: provider approval alone approves the Runner. Off by default (admin approval required). */
   kycAutoApprove: boolean('kyc_auto_approve').notNull().default(false),
   ...timestamps,

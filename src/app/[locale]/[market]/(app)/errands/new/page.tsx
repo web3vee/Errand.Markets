@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { areasWithBoundaries, marketplaceConfig } from '@/modules/errands/service';
+import { areasWithBoundaries, feeScheduleFor, marketplaceConfig } from '@/modules/errands/service';
+import { serializeFees } from '@/ui/pricing/price-summary';
 import { currencySymbol } from '@/lib/money';
 import { defaultDb, requireAccount } from '@/server/context';
 import { money, tzLabel } from '@/server/format';
@@ -39,6 +40,9 @@ export default async function NewErrand({ params, searchParams }: { params: Prom
         initialCategory={cats.some((c) => c.key === initial) ? initial! : null}
         formatLocale={market.formatLocale}
         minorUnit={market.currency.minorUnit}
+        fees={serializeFees(await feeScheduleFor(db, market.id, null))}
+        rounding={market.roundingMode}
+        displaySymbol={market.currency.displaySymbol}
       />
     </Container>
   );

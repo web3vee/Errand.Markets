@@ -3,6 +3,7 @@
 > Decisions (2026-11-26, see [09](./09-open-questions.md)):
 > - **Price:** set by the customer (editable while open); the first eligible Runner to accept gets the errand.
 > - **Commission: 0 at launch** (`commission_bps = 0`). The commission and tax steps still run, so turning it on later is config only.
+> - **Service fee: 5% of the errand price**, paid by the customer (not applied to item costs). **No minimum price.** The customer pays **after a Runner accepts**, including the **estimated item cost upfront**. `quote()` is implemented in `src/modules/pricing/domain/quote.ts` (integer-only, per-market rounding, tax step) and already powers the price breakdown customers see.
 > - **Items:** the Runner buys with their own money and is **reimbursed when the errand is released**. This replaces the brief's "Runners never front their own money" rule, so there is no item-cost advance. Details still open: Q1a–Q1c.
 > - **Paystack:** collect into the platform balance; release via the Transfers API (Q2).
 

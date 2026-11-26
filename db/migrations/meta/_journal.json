@@ -29,6 +29,20 @@
       "when": 1795701421840,
       "tag": "0003_marketplace_security",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795705911628,
+      "tag": "0004_rounding_mode",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795705912279,
+      "tag": "0005_service_fee_5pct",
+      "breakpoints": true
     }
   ]
 }

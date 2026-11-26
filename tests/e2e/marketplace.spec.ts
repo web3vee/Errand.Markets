@@ -26,18 +26,22 @@ for (const market of ['ng', 'vc'] as const) {
     await customer.getByLabel('Details').fill('A4 envelope, fragile.');
     await customer.locator('#dropoff-area').selectOption({ label: m.area });
     await customer.locator('#dropoff-landmark').fill('Blue gate opposite the bank, 2nd floor');
-    await customer.getByLabel(/^Your price/).fill('2,500');
+    await customer.getByLabel(/^Your price/).fill(market === 'ng' ? '2,500' : '25');
+    // Live breakdown: price + 5% service fee
+    await expect(customer.getByTestId('post-summary-total')).toHaveText(market === 'ng' ? '₦2,625.00' : 'EC$26.25');
     const png = await sharp({ create: { width: 800, height: 600, channels: 3, background: '#4a7' } }).png().toBuffer();
     await customer.locator('input[type=file]').setInputFiles({ name: 'parcel.png', mimeType: 'image/png', buffer: png });
     await expect(customer.getByRole('button', { name: 'Remove photo' })).toBeVisible();
     await customer.getByRole('button', { name: 'Post errand' }).click();
     await expect(customer.getByTestId('errand-status')).toHaveAttribute('data-status', 'open');
     const errandUrl = customer.url().split('?')[0]!;
+    await expect(customer.getByTestId('errand-summary-total')).toHaveText(market === 'ng' ? '₦2,625.00' : 'EC$26.25');
 
     // ── Runner finds it (area + price only), sees the photo, asks a question
     await runner.goto(`/en/${market}/runner/errands`);
     await runner.getByRole('link', { name: new RegExp(title) }).click();
     await expect(runner.getByText('Blue gate')).toHaveCount(0); // landmark hidden before acceptance/payment
+    await expect(runner.getByTestId('runner-earns')).toHaveText(market === 'ng' ? '₦2,500.00' : 'EC$25.00'); // 0 commission
     const img = runner.locator('img[src^="/api/media/"]').first();
     await expect(img).toBeVisible();
     expect(await img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
@@ -58,7 +62,7 @@ for (const market of ['ng', 'vc'] as const) {
     await runner.goto(`/en/${market}/runner/errands`);
     await runner.getByRole('link', { name: new RegExp(title) }).click();
     await customer.goto(errandUrl);
-    await customer.getByLabel(/Change price/).fill('3000');
+    await customer.getByLabel(/Change price/).fill(market === 'ng' ? '3000' : '30');
     await customer.getByRole('button', { name: 'Save price' }).click();
     await expect(customer.getByText('Price updated.')).toBeVisible();
     await runner.getByRole('button', { name: /^Accept for/ }).click();

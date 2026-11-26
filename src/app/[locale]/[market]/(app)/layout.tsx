@@ -28,7 +28,7 @@ export default async function AppLayout({ children, params }: { children: ReactN
   const messages = await getMessages();
   const sandbox = authMode() === 'local' || providerMode(market.code) === 'sandbox';
   // Client components here only need form-related namespaces.
-  const pick = ['auth', 'common', 'runnerOnboarding', 'onboarding', 'sandbox', 'post', 'chat', 'notificationsPage', 'runnerMarket', 'errands'] as const;
+  const pick = ['auth', 'common', 'runnerOnboarding', 'onboarding', 'sandbox', 'post', 'chat', 'notificationsPage', 'runnerMarket', 'errands', 'pricing'] as const;
   const clientMessages = Object.fromEntries(pick.map((k) => [k, (messages as Record<string, unknown>)[k]]));
   return (
     <NextIntlClientProvider locale={locale} messages={clientMessages}>

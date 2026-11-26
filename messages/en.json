@@ -539,7 +539,7 @@
     "contactPhone": "Contact phone (optional)",
     "instructions": "Instructions for this stop (optional)",
     "price": "Your price",
-    "priceHint": "What you'll pay the Runner for the errand ({code}). You can raise it later if nobody accepts.",
+    "priceHint": "What you'll pay the Runner for the errand ({code}). A {rate} service fee is added. You can raise the price later if nobody accepts.",
     "priceMin": "Minimum: {amount}",
     "when": "When?",
     "asap": "As soon as possible",
@@ -729,5 +729,15 @@
   "offline": {
     "title": "You're offline",
     "body": "Check your connection and try again. Pages you opened recently may still work."
+  },
+  "pricing": {
+    "title": "What you'll pay",
+    "errandFee": "Errand price",
+    "serviceFee": "Service fee ({rate})",
+    "items": "Items (estimate, held for the Runner)",
+    "total": "Total",
+    "whenPaid": "You pay this after a Runner accepts. Item money is held and settled against the receipt — any difference is refunded or topped up.",
+    "youEarn": "You earn",
+    "itemsReimbursed": "+ items reimbursed against the receipt ({amount})"
   }
 }

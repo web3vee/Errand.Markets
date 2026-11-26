@@ -8,19 +8,16 @@
 | 2026-11-26 | **Visual direction A (Ledger)**. Direction B removed. |
 | 2026-11-26 | **Q4/Q7 pricing:** the customer sets the price for each errand and can edit it while no Runner has accepted. The **first eligible Runner to accept** gets the errand. Runner offers are off. **No commission at launch.** Price can't change after acceptance (default). |
 | 2026-11-26 | **Q1 items:** Runners buy items with their own money and are **reimbursed on delivery**. This replaces the brief's "Runners never front their own money". |
+| 2026-11-26 | **Q4b:** no minimum errand price — customers set any price per errand. **Q22:** customer pays **after a Runner accepts** (brief's order). **Q4a:** **5% service fee**, paid by the customer, applied to the errand price (not to item costs — confirm if items should also carry it). **Q1a:** customer pays the **estimated item cost upfront** (held, settled against the receipt). Applied as fee-schedule version 2 (migration 0005); errands keep the version they were posted under. |
 | 2026-11-26 | **Stage 4 built with:** min price / item cap **unset** (nothing enforced until decided); brief's payment order kept (accept → pay, Q22 still open); prohibited-items list **empty** until legal input; accepted defaults: expiry 48h, max 3 active errands per Runner, Q10 questions before acceptance, Q14 hold for review. |
 
 ## Still open (blocking the stage shown)
 
 | # | Question | Recommended default | Blocks |
 |---|---|---|---|
-| Q1a | Does the customer pay the **estimated item cost upfront** (held with the fee), so the Runner's reimbursement is guaranteed? | Yes. Without it, a Runner can buy items and never be repaid. | Stage 5–6 |
 | Q1b | St. Vincent payouts are admin-approved bank batches, so a Runner could wait **several days** to be repaid for items. Acceptable? Or weekly vs twice-weekly batches? | Accept; twice-weekly batches. | Stage 6 |
 | Q1c | Who fronts the money: the **Runners**, or Errand.markets itself? | Runners (that's how the docs are written now). | Stage 5 |
 | Q1d | Limit on item cost per errand (protects Runners and limits fraud)? | Per-market cap, set by admin. | Stage 4 |
-| Q4a | **Service fee** charged to customers at launch? ("No commission" covers the Runner side only.) | Ask; config holds 0 until you decide. | Stage 6 |
-| Q4b | **Minimum errand price** per market (NGN / EC$)? | Please give numbers, or "no minimum". | Stage 4 |
-| Q22 | **When does the customer pay?** With first-to-accept, a Runner could accept and then wait for the customer to pay. Option (i), as in the brief: pay after a Runner accepts (30-min timeout, then reopen). Option (ii): pay when posting, so Runners only see funded errands and unaccepted errands are refunded on expiry. | (ii). Runners never accept unfunded work. This changes the brief's state order (`funded` before acceptance), so it needs your OK. | Stage 4 |
 | Q23 | **Business contact email** shown on the homepage. | Please provide the address. | Homepage |
 
 ## Blocking Stage 3 (auth)
