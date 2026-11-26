@@ -3,6 +3,8 @@ import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import * as schema from '../../db/schema';
 import { MARKET_SEED } from '../../db/seed/markets';
 import { RUNNER_RULES_SEED } from '../../db/seed/runner-rules';
+import { FEE_SCHEDULE_SEED } from '../../db/seed/fee-schedules';
+import { circlePolygon } from '../../src/modules/errands/domain/geo';
 
 /** Idempotent: upserts markets, current runner rules, service areas and categories. */
 export async function seed(db: PostgresJsDatabase<typeof schema>) {
@@ -24,9 +26,20 @@ export async function seed(db: PostgresJsDatabase<typeof schema>) {
         .where(and(eq(schema.runnerRules.marketId, marketId), isNull(schema.runnerRules.effectiveTo)));
       if (current.length === 0) await db.insert(schema.runnerRules).values({ marketId, ...rules });
     }
+    const currentFees = await db.select({ id: schema.marketFeeSchedules.id }).from(schema.marketFeeSchedules)
+      .where(and(eq(schema.marketFeeSchedules.marketId, marketId), isNull(schema.marketFeeSchedules.effectiveTo)));
+    if (currentFees.length === 0) await db.insert(schema.marketFeeSchedules).values({ marketId, ...FEE_SCHEDULE_SEED, reminderOffsetsHours: [...FEE_SCHEDULE_SEED.reminderOffsetsHours] });
     for (const [i, a] of m.serviceAreas.entries()) {
-      await db.insert(schema.serviceAreas).values({ marketId, slug: a.slug, nameKey: a.nameKey, island: a.island, active: a.active, sort: i })
-        .onConflictDoUpdate({ target: [schema.serviceAreas.marketId, schema.serviceAreas.slug], set: { nameKey: a.nameKey, island: a.island, active: a.active, sort: i } });
+      const geo = a.center && a.radiusKm
+        ? { centerLat: String(a.center.lat), centerLng: String(a.center.lng), boundary: circlePolygon(a.center, a.radiusKm), boundaryStatus: 'approximate' }
+        : {};
+      const v = { nameKey: a.nameKey, island: a.island, active: a.active, sort: i, ...geo };
+      // Never overwrite a boundary an admin has confirmed.
+      const [existing] = await db.select({ status: schema.serviceAreas.boundaryStatus }).from(schema.serviceAreas)
+        .where(and(eq(schema.serviceAreas.marketId, marketId), eq(schema.serviceAreas.slug, a.slug)));
+      const set = existing?.status === 'confirmed' ? { nameKey: a.nameKey, island: a.island, active: a.active, sort: i } : v;
+      await db.insert(schema.serviceAreas).values({ marketId, slug: a.slug, ...v })
+        .onConflictDoUpdate({ target: [schema.serviceAreas.marketId, schema.serviceAreas.slug], set });
     }
     for (const c of m.categories) {
       const v = { nameKey: c.nameKey, descriptionKey: c.descriptionKey, purchaseAllowed: c.purchaseAllowed, sort: c.sort, active: c.active };

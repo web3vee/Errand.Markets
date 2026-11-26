@@ -59,3 +59,21 @@ export interface KycProvider {
     Promise<{ providerRef: string | null; launch: KycLaunch }>;
   verifyWebhook(req: WebhookRequest): Promise<WebhookResult<KycEvent>>;
 }
+
+// ── Object storage (images: errand photos, chat photos, later proofs/receipts) ──
+export interface ObjectStore {
+  readonly key: string;
+  readonly sandbox: boolean;
+  put(path: string, bytes: Uint8Array, contentType: string): Promise<void>;
+  get(path: string): Promise<{ bytes: Uint8Array; contentType: string } | null>;
+  /** Short-lived URL for direct download, when the backend supports it. */
+  signedUrl?(path: string, ttlSeconds: number): Promise<string | null>;
+}
+
+// ── Web push ──────────────────────────────────────────────────────────────────
+export type PushTarget = { endpoint: string; p256dh: string; auth: string };
+export interface PushProvider {
+  readonly key: string;
+  readonly sandbox: boolean;
+  send(target: PushTarget, payload: { title: string; body: string; url: string; tag?: string }): Promise<{ ok: true } | { ok: false; gone: boolean; error: string }>;
+}

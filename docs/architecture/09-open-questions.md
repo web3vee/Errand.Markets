@@ -8,6 +8,7 @@
 | 2026-11-26 | **Visual direction A (Ledger)**. Direction B removed. |
 | 2026-11-26 | **Q4/Q7 pricing:** the customer sets the price for each errand and can edit it while no Runner has accepted. The **first eligible Runner to accept** gets the errand. Runner offers are off. **No commission at launch.** Price can't change after acceptance (default). |
 | 2026-11-26 | **Q1 items:** Runners buy items with their own money and are **reimbursed on delivery**. This replaces the brief's "Runners never front their own money". |
+| 2026-11-26 | **Stage 4 built with:** min price / item cap **unset** (nothing enforced until decided); brief's payment order kept (accept → pay, Q22 still open); prohibited-items list **empty** until legal input; accepted defaults: expiry 48h, max 3 active errands per Runner, Q10 questions before acceptance, Q14 hold for review. |
 
 ## Still open (blocking the stage shown)
 

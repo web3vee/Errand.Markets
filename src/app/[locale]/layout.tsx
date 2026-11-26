@@ -6,6 +6,7 @@ import type { ReactNode } from 'react';
 import { routing } from '@/i18n/routing';
 import { localeDirection } from '@/lib/i18n-direction';
 import { geist } from '@/ui/fonts';
+import { RegisterServiceWorker } from '@/ui/pwa/register-sw';
 import { tokensCss } from '@/ui/tokens';
 
 export function generateStaticParams() {
@@ -41,6 +42,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
       </head>
       <body className="min-h-dvh">
         {children}
+        <RegisterServiceWorker />
       </body>
     </html>
   );

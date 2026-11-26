@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
-import { boolean, char, index, integer, jsonb, pgTable, smallint, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
-import { marketStatus, pricingControl } from './enums';
+import { bigint, boolean, char, index, integer, jsonb, numeric, pgTable, smallint, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { marketStatus, pricingControl, prohibitedAction } from './enums';
 
 const timestamps = {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
@@ -56,7 +56,10 @@ export const runnerRules = pgTable(
   (t) => [uniqueIndex('runner_rules_one_current').on(t.marketId).where(sql`effective_to is null`)],
 );
 
-/** Polygons (PostGIS geography) are added in Stage 4. */
+/**
+ * Service areas. Boundary is a GeoJSON Polygon/MultiPolygon (portable; checked in app code and
+ * unit-tested). `boundary_status = 'approximate'` marks placeholder circles until real boundaries are drawn.
+ */
 export const serviceAreas = pgTable(
   'service_areas',
   {
@@ -67,6 +70,10 @@ export const serviceAreas = pgTable(
     island: text('island'),
     active: boolean('active').notNull().default(true),
     sort: integer('sort').notNull().default(0),
+    centerLat: numeric('center_lat', { precision: 9, scale: 6 }),
+    centerLng: numeric('center_lng', { precision: 9, scale: 6 }),
+    boundary: jsonb('boundary'),
+    boundaryStatus: text('boundary_status').notNull().default('approximate'),
   },
   (t) => [uniqueIndex('service_areas_market_slug').on(t.marketId, t.slug)],
 );
@@ -84,4 +91,47 @@ export const errandCategories = pgTable(
     active: boolean('active').notNull().default(true),
   },
   (t) => [uniqueIndex('errand_categories_market_key').on(t.marketId, t.key), index('errand_categories_market').on(t.marketId)],
+);
+
+/**
+ * Fees and marketplace timers per market (versioned; current row has effective_to = null).
+ * NULL means "not decided yet" — the app enforces nothing for that value.
+ */
+export const marketFeeSchedules = pgTable(
+  'market_fee_schedules',
+  {
+    id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+    marketId: uuid('market_id').notNull().references(() => markets.id),
+    commissionBps: integer('commission_bps').notNull(),
+    serviceFeeBps: integer('service_fee_bps'),
+    serviceFeeFixedMinor: bigint('service_fee_fixed_minor', { mode: 'bigint' }),
+    serviceFeeMinMinor: bigint('service_fee_min_minor', { mode: 'bigint' }),
+    serviceFeeMaxMinor: bigint('service_fee_max_minor', { mode: 'bigint' }),
+    cancellationFeeMinor: bigint('cancellation_fee_minor', { mode: 'bigint' }),
+    minErrandPriceMinor: bigint('min_errand_price_minor', { mode: 'bigint' }),
+    maxItemCostMinor: bigint('max_item_cost_minor', { mode: 'bigint' }),
+    autoReleaseHours: integer('auto_release_hours').notNull(),
+    reminderOffsetsHours: integer('reminder_offsets_hours').array().notNull(),
+    unfundedOfferTimeoutMinutes: integer('unfunded_offer_timeout_minutes').notNull(),
+    errandDefaultExpiryHours: integer('errand_default_expiry_hours').notNull(),
+    effectiveFrom: timestamp('effective_from', { withTimezone: true }).notNull().defaultNow(),
+    effectiveTo: timestamp('effective_to', { withTimezone: true }),
+    createdBy: uuid('created_by'),
+  },
+  (t) => [uniqueIndex('market_fee_schedules_one_current').on(t.marketId).where(sql`effective_to is null`)],
+);
+
+/** Per-market prohibited items. Content needs legal input (docs/architecture/08 BOTH-7); seeded empty. */
+export const prohibitedItems = pgTable(
+  'prohibited_items',
+  {
+    id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+    marketId: uuid('market_id').notNull().references(() => markets.id),
+    label: text('label').notNull(),
+    keywords: text('keywords').array().notNull(),
+    action: prohibitedAction('action').notNull(),
+    active: boolean('active').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('prohibited_items_market').on(t.marketId)],
 );

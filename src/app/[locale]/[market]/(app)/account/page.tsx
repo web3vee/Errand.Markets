@@ -62,7 +62,10 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
           </div>
         )}
       </section>
-      <p className="mt-12 text-small text-ink-3">{t('account.postSoon')}</p>
+      <section className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6">
+        <p className="text-body">{t('account.postSoon')}</p>
+        <Button asChild><Link href={`/${locale}/${slug}/errands/new`}>{t('account.postCta')}</Link></Button>
+      </section>
     </Container>
   );
 }

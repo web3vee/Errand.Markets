@@ -23,6 +23,7 @@ async function signIn(page: Page, market: 'ng' | 'vc', phone: string, name?: str
     await expect(page.getByRole('heading', { name: 'What should we call you?' })).toBeVisible();
     await page.getByLabel('Your name').fill(name);
     await page.getByRole('button', { name: 'Continue' }).click();
+    await expect(page).not.toHaveURL(/onboarding/);
   }
 }
 

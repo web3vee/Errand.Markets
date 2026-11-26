@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { REJECT_REASONS } from '@/modules/kyc/domain/rules';
 import { decideVerification, KycError } from '@/modules/kyc/service';
 import { defaultDb, requireAdmin } from '@/server/context';
+import { onKycDecision } from '@/server/workflows';
 
 export type DecisionState = { error?: string } | null;
 
@@ -24,10 +25,11 @@ export async function decideAction(locale: string, verificationId: string, _prev
   if (!parsed.success || !/^[0-9a-f-]{36}$/.test(verificationId)) return { error: t('common.error') };
   if (parsed.data.decision !== 'approve' && !parsed.data.reasonCode) return { error: t('admin.reasonRequired') };
   try {
-    await decideVerification(defaultDb(), {
+    const r = await decideVerification(defaultDb(), {
       adminId: account.id, adminScope: scope, verificationId,
       decision: parsed.data.decision, reasonCode: parsed.data.reasonCode, note: parsed.data.note,
     });
+    await onKycDecision(r.userId, r.marketId, r.runnerStatus);
   } catch (e) {
     if (e instanceof KycError) return { error: t(e.code === 'decision_not_allowed' ? 'admin.notAllowed' : 'common.error') };
     throw e;

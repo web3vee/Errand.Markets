@@ -14,6 +14,7 @@
 | 08 | [Compliance flags](./08-compliance-flags.md) | Questions for a lawyer: launch markets and future regions |
 | 09 | [Open questions](./09-open-questions.md) | Product decisions I need from you before Stages 3–6 |
 | 10 | [Identity, auth & KYC](./10-identity-and-kyc.md) | As built in Stage 3: sign-in flow, roles, access-control layers, KYC states, local dev |
+| 11 | [Errand marketplace](./11-marketplace.md) | As built in Stage 4: posting, screening, browsing, first-to-accept, privacy, messaging, notifications, images |
 
 Repo root also has [`.env.example`](../../.env.example) with every secret namespaced per market.
 

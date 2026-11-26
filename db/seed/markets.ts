@@ -8,10 +8,9 @@ import type { MarketConfig } from '@/modules/markets/domain/schema';
  * becomes the DB seed and the app switches to `DbMarketSource`; nothing
  * else changes.
  *
- * Not included yet (need decisions — see docs/architecture/09):
- *  - fee schedule numbers (Q4), tax rules (0 at launch), runner rules
- *  - service-area polygons (drawn in Stage 4)
- *  - prohibited-items lists (legal input, 08 BOTH-7)
+ * Service-area centres/radii are APPROXIMATE placeholders (boundary_status = 'approximate'),
+ * turned into circular boundaries until real neighbourhood boundaries are drawn.
+ * Fee schedule: db/seed/fee-schedules.ts. Prohibited items: none (needs legal input, 08 BOTH-7).
  */
 export const MARKET_SEED: MarketConfig[] = [
   {
@@ -29,11 +28,11 @@ export const MARKET_SEED: MarketConfig[] = [
     providers: { payment: 'paystack', payout: 'paystack_transfers', kyc: 'dojah', sms: 'termii', maps: 'google' },
     geoCountries: ['NG'],
     serviceAreas: [
-      { slug: 'wuse-2', nameKey: 'areas.wuse-2', island: null, active: true },
-      { slug: 'maitama', nameKey: 'areas.maitama', island: null, active: true },
-      { slug: 'garki', nameKey: 'areas.garki', island: null, active: true },
-      { slug: 'wuse', nameKey: 'areas.wuse', island: null, active: true },
-      { slug: 'jabi', nameKey: 'areas.jabi', island: null, active: true },
+      { slug: 'wuse-2', nameKey: 'areas.wuse-2', island: null, active: true, center: { lat: 9.0765, lng: 7.47 }, radiusKm: 1.6 },
+      { slug: 'maitama', nameKey: 'areas.maitama', island: null, active: true, center: { lat: 9.088, lng: 7.495 }, radiusKm: 2.0 },
+      { slug: 'garki', nameKey: 'areas.garki', island: null, active: true, center: { lat: 9.035, lng: 7.49 }, radiusKm: 2.2 },
+      { slug: 'wuse', nameKey: 'areas.wuse', island: null, active: true, center: { lat: 9.06, lng: 7.465 }, radiusKm: 1.5 },
+      { slug: 'jabi', nameKey: 'areas.jabi', island: null, active: true, center: { lat: 9.07, lng: 7.425 }, radiusKm: 1.8 },
     ],
     categories: defaultCategories(),
   },
@@ -52,12 +51,12 @@ export const MARKET_SEED: MarketConfig[] = [
     providers: { payment: 'scotia_ecom', payout: 'bank_batch', kyc: 'sumsub', sms: 'twilio', maps: 'google' },
     geoCountries: ['VC'],
     serviceAreas: [
-      { slug: 'kingstown', nameKey: 'areas.kingstown', island: 'st-vincent', active: true },
-      { slug: 'arnos-vale', nameKey: 'areas.arnos-vale', island: 'st-vincent', active: true },
-      { slug: 'calliaqua', nameKey: 'areas.calliaqua', island: 'st-vincent', active: true },
-      { slug: 'villa', nameKey: 'areas.villa', island: 'st-vincent', active: true },
-      { slug: 'campden-park', nameKey: 'areas.campden-park', island: 'st-vincent', active: true },
-      { slug: 'mesopotamia', nameKey: 'areas.mesopotamia', island: 'st-vincent', active: true },
+      { slug: 'kingstown', nameKey: 'areas.kingstown', island: 'st-vincent', active: true, center: { lat: 13.1587, lng: -61.2248 }, radiusKm: 1.5 },
+      { slug: 'arnos-vale', nameKey: 'areas.arnos-vale', island: 'st-vincent', active: true, center: { lat: 13.144, lng: -61.213 }, radiusKm: 1.2 },
+      { slug: 'calliaqua', nameKey: 'areas.calliaqua', island: 'st-vincent', active: true, center: { lat: 13.129, lng: -61.193 }, radiusKm: 1.2 },
+      { slug: 'villa', nameKey: 'areas.villa', island: 'st-vincent', active: true, center: { lat: 13.135, lng: -61.203 }, radiusKm: 1.0 },
+      { slug: 'campden-park', nameKey: 'areas.campden-park', island: 'st-vincent', active: true, center: { lat: 13.18, lng: -61.246 }, radiusKm: 1.2 },
+      { slug: 'mesopotamia', nameKey: 'areas.mesopotamia', island: 'st-vincent', active: true, center: { lat: 13.177, lng: -61.165 }, radiusKm: 1.5 },
     ],
     categories: defaultCategories(),
   },

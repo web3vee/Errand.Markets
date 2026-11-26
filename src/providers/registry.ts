@@ -6,7 +6,10 @@ import { SumsubKyc } from './kyc/sumsub';
 import { SandboxSms } from './sms/sandbox';
 import { TermiiSms } from './sms/termii';
 import { TwilioSms } from './sms/twilio';
-import type { KycProvider, ProviderContext, ProviderMode, SmsProvider } from './types';
+import { SandboxPush, WebPushProvider } from './push/web-push';
+import { LocalObjectStore } from './storage/local';
+import { SupabaseObjectStore } from './storage/supabase';
+import type { KycProvider, ObjectStore, ProviderContext, ProviderMode, PushProvider, SmsProvider } from './types';
 
 type MarketLike = {
   id: string | null; code: string; slug: string; timezone: string; formatLocale: string;
@@ -90,4 +93,26 @@ export function kycFor(m: MarketLike, deps: Deps): KycProvider {
 /** The provider key that webhooks for this market's KYC arrive under (route segment). */
 export function kycWebhookKey(m: MarketLike): string {
   return providerMode(m.code) === 'sandbox' ? 'sandbox-kyc' : m.providers.kyc;
+}
+
+/** Object storage is platform-wide (paths are prefixed by market so a market can move region later). */
+let store: ObjectStore | null = null;
+export function objectStore(): ObjectStore {
+  if (store) return store;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (url && key && process.env.STORAGE_MODE !== 'local') {
+    store = new SupabaseObjectStore({ url, serviceRoleKey: key, bucket: process.env.STORAGE_BUCKET ?? 'media' });
+  } else {
+    if (isProductionDeploy()) throw new Error('Local object storage is not allowed on production deploys');
+    store = new LocalObjectStore(process.env.LOCAL_STORAGE_DIR ?? `${process.cwd()}/.data/uploads`);
+  }
+  return store;
+}
+
+/** Web Push when VAPID keys are configured; otherwise the sandbox recorder. */
+export function pushProvider(writeOutbox: (m: { to: string; body: string; marketCode: string }) => Promise<unknown>): PushProvider {
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY, privateKey = process.env.VAPID_PRIVATE_KEY;
+  if (publicKey && privateKey) return new WebPushProvider({ subject: process.env.VAPID_SUBJECT ?? 'mailto:ops@errand.markets', publicKey, privateKey });
+  if (isProductionDeploy()) throw new Error('VAPID keys are required on production deploys');
+  return new SandboxPush((m) => writeOutbox({ ...m, marketCode: 'push' }));
 }

@@ -15,6 +15,9 @@ export const ServiceArea = z.object({
   nameKey: z.string(),
   island: z.string().nullable(),
   active: z.boolean(),
+  /** Seed only: approximate centre + radius, turned into a placeholder boundary polygon. */
+  center: z.object({ lat: z.number(), lng: z.number() }).optional(),
+  radiusKm: z.number().positive().optional(),
 });
 
 export const ErrandCategory = z.object({

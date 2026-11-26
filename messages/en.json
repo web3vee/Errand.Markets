@@ -18,7 +18,13 @@
     "account": "Account",
     "runner": "Runner",
     "admin": "Admin",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "myErrands": "My errands",
+    "findErrands": "Find errands",
+    "myJobs": "My jobs",
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "notificationsCount": "Notifications ({count, plural, one {# unread} other {# unread}})"
   },
   "market": {
     "label": "Market",
@@ -277,9 +283,10 @@
     "runnerCta": "Become a Runner",
     "runnerStatusTitle": "Runner status",
     "manageRunner": "Runner profile",
-    "postSoon": "Posting errands opens in the next release.",
+    "postSoon": "Need something done?",
     "suspendedTitle": "Account unavailable",
-    "suspendedBody": "Your account isn't active. Contact support for help."
+    "suspendedBody": "Your account isn't active. Contact support for help.",
+    "postCta": "Post an errand"
   },
   "runnerOnboarding": {
     "profileTitle": "Your Runner profile",
@@ -433,5 +440,294 @@
     "admin_approved": "Approved",
     "admin_rejected": "Rejected",
     "cancelled": "Cancelled"
+  },
+  "notify": {
+    "errand_nearby": {
+      "title": "New errand near you",
+      "body": "{title} · {price}"
+    },
+    "errand_accepted": {
+      "title": "A Runner accepted your errand",
+      "body": "{runner} accepted “{title}”."
+    },
+    "errand_taken": {
+      "title": "Errand taken",
+      "body": "“{title}” was accepted by another Runner."
+    },
+    "errand_expired": {
+      "title": "Errand expired",
+      "body": "Nobody accepted “{title}” in time. You can post it again with a higher price."
+    },
+    "errand_review_cleared": {
+      "title": "Your errand is live",
+      "body": "“{title}” passed review and is now visible to Runners."
+    },
+    "errand_review_rejected": {
+      "title": "Errand not allowed",
+      "body": "“{title}” can't be posted because it includes items we don't allow."
+    },
+    "new_message": {
+      "title": "New message",
+      "body": "{sender}: {preview}"
+    },
+    "kyc_approved": {
+      "title": "You're verified",
+      "body": "You can now accept errands on Errand.markets."
+    },
+    "kyc_rejected": {
+      "title": "Verification unsuccessful",
+      "body": "We couldn't approve your Runner account. Contact support for help."
+    },
+    "kyc_resubmission": {
+      "title": "Please verify again",
+      "body": "We need you to redo your identity check."
+    },
+    "sms": "Errand.markets: {title}. {body}"
+  },
+  "errandStatus": {
+    "draft": "Draft",
+    "open": "Open",
+    "offer_accepted": "Runner accepted",
+    "funded": "Paid",
+    "in_progress": "In progress",
+    "completed_pending_confirmation": "Awaiting your confirmation",
+    "confirmed": "Confirmed",
+    "paid_out": "Completed",
+    "cancelled": "Cancelled",
+    "disputed": "In dispute",
+    "refunded": "Refunded",
+    "expired": "Expired",
+    "pending_review": "Under review"
+  },
+  "stopKinds": {
+    "pickup": "Pick up from",
+    "purchase": "Buy at",
+    "collect": "Collect from",
+    "dropoff": "Deliver to"
+  },
+  "post": {
+    "title": "Post an errand",
+    "lead": "Say what you need. Set the price you're willing to pay — the first verified Runner to accept it takes the job.",
+    "category": "What kind of errand?",
+    "titleLabel": "Short title",
+    "titleHint": "For example “Collect my passport from the embassy”.",
+    "description": "Details",
+    "descriptionHint": "What exactly should the Runner do? Anything they should know?",
+    "buying": "The Runner needs to buy things for me",
+    "items": "What to buy",
+    "itemName": "Item",
+    "itemQty": "Qty",
+    "itemPrice": "Est. price each",
+    "addItem": "Add item",
+    "removeItem": "Remove",
+    "itemsHint": "The Runner pays at the shop with their own money and is reimbursed for the receipt amount when you confirm.",
+    "itemTotal": "Estimated items total: {amount}",
+    "pickupTitle": "Where should the Runner go first? (optional)",
+    "pickupKind": "What happens there?",
+    "noPickup": "Nowhere first",
+    "dropoffTitle": "Where should it end up?",
+    "area": "Area",
+    "areaHint": "We currently operate in these areas.",
+    "useLocation": "Use my current location",
+    "locating": "Finding you…",
+    "locationSet": "Pin set from your location.",
+    "locationOutside": "Your location is outside our service areas. Choose an area instead.",
+    "locationDenied": "Location unavailable. Choose an area instead.",
+    "landmark": "Landmark / directions",
+    "landmarkHint": "For example “Blue gate opposite Shoprite Jabi, 2nd floor”.",
+    "contactName": "Contact name (optional)",
+    "contactPhone": "Contact phone (optional)",
+    "instructions": "Instructions for this stop (optional)",
+    "price": "Your price",
+    "priceHint": "What you'll pay the Runner for the errand ({code}). You can raise it later if nobody accepts.",
+    "priceMin": "Minimum: {amount}",
+    "when": "When?",
+    "asap": "As soon as possible",
+    "byTime": "By a specific time",
+    "byTimeLabel": "Done by ({tz})",
+    "photos": "Photos (optional)",
+    "photosHint": "Up to 3. Photos are compressed and location data is removed.",
+    "addPhoto": "Add photo",
+    "uploading": "Uploading…",
+    "removePhoto": "Remove photo",
+    "submit": "Post errand",
+    "saveDraft": "Save as draft",
+    "errors": {
+      "invalid_category": "Choose a category.",
+      "purchase_not_allowed": "This category doesn't allow buying items.",
+      "price_required": "Enter a price.",
+      "price_below_minimum": "The minimum price is {amount}.",
+      "items_required": "Add at least one item to buy.",
+      "items_over_cap": "Items can't cost more than {amount} in total.",
+      "dropoff_required": "Add where it should end up.",
+      "invalid_window": "Pick a time between 15 minutes and 30 days from now.",
+      "invalid_area": "Choose an area.",
+      "pin_outside_area": "That pin is outside the selected area.",
+      "invalid_pin": "That location isn't valid.",
+      "prohibited": "We can't accept errands involving: {labels}.",
+      "account_not_allowed": "Your account can't post errands right now.",
+      "title": "Add a short title (3–80 characters).",
+      "description": "Add details (up to 2,000 characters).",
+      "landmark": "Add a landmark or directions (3–200 characters).",
+      "phone": "Enter a valid phone number or leave it empty.",
+      "amount": "Enter a valid amount.",
+      "upload": "That photo couldn't be uploaded. Use a JPG, PNG or WebP under 8 MB."
+    },
+    "heldForReview": "Thanks — your errand is being reviewed before it goes live. We'll notify you.",
+    "posted": "Your errand is live. We'll tell you when a Runner accepts.",
+    "pickupKindPickup": "Pick something up",
+    "pickupKindPurchase": "Buy the items here",
+    "pickupKindCollect": "Collect documents",
+    "pickupToggle": "The Runner needs to go somewhere first"
+  },
+  "errands": {
+    "title": "My errands",
+    "empty": "You haven't posted any errands yet.",
+    "new": "Post an errand",
+    "drafts": "Drafts",
+    "active": "Active",
+    "past": "Past",
+    "detailTitle": "Errand",
+    "price": "Price",
+    "items": "Items to buy",
+    "itemsTotal": "Estimated total {amount}",
+    "stops": "Route",
+    "photos": "Photos",
+    "timeline": "Activity",
+    "when": "When",
+    "asap": "As soon as possible",
+    "by": "By {time}",
+    "expires": "Open until {time}",
+    "editPrice": "Change price",
+    "savePrice": "Save price",
+    "priceSaved": "Price updated.",
+    "priceLocked": "The price can't change after a Runner accepts.",
+    "stale": "The errand changed while you were editing. Reload and try again.",
+    "publish": "Post now",
+    "questions": "Questions from Runners",
+    "noQuestions": "No questions yet.",
+    "runner": "Your Runner",
+    "chat": "Message",
+    "awaitingPayment": "{runner} accepted. Payment opens in the next release — your Runner will start once it's paid.",
+    "reviewPending": "Under review: this errand mentions something on our restricted list ({note}). An admin will check it shortly.",
+    "reviewRejected": "This errand wasn't allowed.",
+    "events": {
+      "created": "Created",
+      "published": "Posted",
+      "held_for_review": "Held for review",
+      "review_cleared": "Approved by review",
+      "review_rejected": "Rejected by review",
+      "price_changed": "Price changed",
+      "runner_accepted": "Runner accepted",
+      "expired": "Expired"
+    },
+    "contact": "Contact"
+  },
+  "market2": {
+    "approxAreas": "Areas are approximate while we finalise boundaries."
+  },
+  "runnerMarket": {
+    "title": "Find errands",
+    "lead": "Open errands in your areas. Accept one at the price shown — first to accept gets it.",
+    "notVerified": "Verify your identity to see and accept errands.",
+    "verifyCta": "Verify now",
+    "filters": {
+      "areas": "Areas",
+      "mine": "My areas",
+      "all": "All areas",
+      "category": "Category",
+      "any": "Any",
+      "apply": "Apply"
+    },
+    "empty": "No open errands right now. We'll notify you when one comes up.",
+    "noAreas": "Add service areas to your Runner profile to see errands.",
+    "posted": "Posted {when}",
+    "itemsEstimate": "+ items ≈ {amount} (reimbursed)",
+    "accept": "Accept for {amount}",
+    "ask": "Ask a question",
+    "acceptHelp": "By accepting you agree to do this errand. Exact address and contact details unlock once the customer has paid.",
+    "accepted": "You accepted this errand. We've told the customer.",
+    "more": "Older errands",
+    "errors": {
+      "not_open": "Sorry — this errand is no longer available.",
+      "own_errand": "You can't accept your own errand.",
+      "not_verified": "Verify your identity first.",
+      "wrong_market": "This errand is in another market.",
+      "blocked": "You can't accept this errand.",
+      "too_many_active": "You already have {max} active errands. Finish one first.",
+      "under_review": "This errand is under review.",
+      "price_changed": "The customer just changed the price to {amount}. Check and accept again.",
+      "not_found": "Errand not found."
+    },
+    "jobsTitle": "My jobs",
+    "jobsEmpty": "You haven't accepted any errands yet.",
+    "waitingPayment": "Waiting for the customer to pay. Exact address and contact details unlock after payment.",
+    "areaOnly": "Area: {areas}"
+  },
+  "chat": {
+    "inbox": "Messages",
+    "empty": "No conversations yet.",
+    "about": "About: {title}",
+    "with": "with {name}",
+    "you": "You",
+    "placeholder": "Write a message",
+    "send": "Send",
+    "attach": "Attach photo",
+    "readOnly": "This conversation is closed.",
+    "new": "New",
+    "report": "Report",
+    "block": "Block",
+    "unblock": "Unblock",
+    "blocked": "You blocked this person. They can't message you or take your errands.",
+    "reportTitle": "Report this person",
+    "reportReason": "Reason",
+    "reportDetails": "What happened? (optional)",
+    "reportSubmit": "Send report",
+    "reported": "Thanks — our team will look into it.",
+    "reasons": {
+      "harassment": "Harassment or abuse",
+      "scam": "Scam or fraud",
+      "prohibited_item": "Prohibited item",
+      "unsafe": "Safety concern",
+      "no_show": "Didn't show up",
+      "other": "Other"
+    },
+    "errors": {
+      "not_found": "Conversation not found.",
+      "not_allowed": "You can't message here.",
+      "read_only": "This conversation is closed.",
+      "blocked": "You can't message this person.",
+      "empty": "Write a message first.",
+      "too_long": "Messages can be up to 2,000 characters.",
+      "not_verified": "Verify your identity first.",
+      "rate_limited": "You're sending messages too quickly."
+    },
+    "photo": "Photo"
+  },
+  "notificationsPage": {
+    "title": "Notifications",
+    "empty": "You're all caught up.",
+    "markAll": "Mark all as read",
+    "pushTitle": "Notifications on this device",
+    "pushOn": "Turn on",
+    "pushOff": "Turn off",
+    "pushEnabled": "On for this device.",
+    "pushUnsupported": "This browser doesn't support notifications. Install the app to your home screen to get them.",
+    "pushNotConfigured": "Push notifications aren't configured in this environment (sandbox).",
+    "pushDenied": "Notifications are blocked in your browser settings."
+  },
+  "adminErrands": {
+    "title": "Errands held for review",
+    "empty": "Nothing held for review.",
+    "matched": "Matched: {note}",
+    "clear": "Allow and publish",
+    "reject": "Reject",
+    "note": "Note (internal)",
+    "done": "Saved.",
+    "nav": "Held errands"
+  },
+  "offline": {
+    "title": "You're offline",
+    "body": "Check your connection and try again. Pages you opened recently may still work."
   }
 }

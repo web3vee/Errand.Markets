@@ -27,3 +27,23 @@ export const kycVerificationStatus = pgEnum('kyc_verification_status', [
 export const vehicleType = pgEnum('vehicle_type', ['none', 'bicycle', 'motorbike', 'car']);
 export const availability = pgEnum('availability', ['offline', 'online']);
 export const webhookStatus = pgEnum('webhook_status', ['received', 'processed', 'ignored', 'failed']);
+
+// ── Stage 4: marketplace ─────────────────────────────────────────────────────
+export const errandStatus = pgEnum('errand_status', [
+  'draft', 'open', 'offer_accepted', 'funded', 'in_progress', 'completed_pending_confirmation', 'confirmed', 'paid_out',
+  'cancelled', 'disputed', 'refunded', 'expired',
+]);
+export const errandReviewState = pgEnum('errand_review_state', ['none', 'pending_review', 'cleared', 'rejected']);
+export const pricingMode = pgEnum('pricing_mode', ['fixed', 'offers']);
+export const timeWindowKind = pgEnum('time_window_kind', ['asap', 'by_time']);
+export const stopKind = pgEnum('stop_kind', ['pickup', 'purchase', 'collect', 'dropoff']);
+export const pinSource = pgEnum('pin_source', ['area_center', 'device', 'map']);
+export const offerKind = pgEnum('offer_kind', ['accept_price', 'counter_offer']);
+export const offerStatus = pgEnum('offer_status', ['pending', 'accepted', 'withdrawn', 'declined', 'expired', 'superseded']);
+export const actorType = pgEnum('actor_type', ['customer', 'runner', 'admin', 'system', 'provider']);
+export const mediaKind = pgEnum('media_kind', ['errand_reference', 'message_photo', 'proof', 'receipt', 'avatar']);
+export const prohibitedAction = pgEnum('prohibited_action', ['block', 'review']);
+export const conversationStatus = pgEnum('conversation_status', ['open', 'read_only']);
+export const deliveryChannel = pgEnum('delivery_channel', ['push', 'sms']);
+export const deliveryStatus = pgEnum('delivery_status', ['queued', 'sent', 'failed', 'skipped']);
+export const reportStatus = pgEnum('report_status', ['open', 'actioned', 'dismissed']);

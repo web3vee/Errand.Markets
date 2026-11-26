@@ -144,7 +144,7 @@ export async function decideVerification(db: Db, input: {
       actorId: input.adminId, marketId: v.marketId, action: `kyc.${input.decision}`, subjectType: 'kyc_verification', subjectId: v.id,
       data: { userId: v.userId, reasonCode: input.reasonCode, note: input.note, from: v.status, to: next.verification },
     });
-    return { userId: v.userId, runnerStatus: next.runner };
+    return { userId: v.userId, marketId: v.marketId, runnerStatus: next.runner };
   });
 }
 
