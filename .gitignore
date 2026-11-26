@@ -1,0 +1,48 @@
+# --- Secrets & credentials (never commit) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+secrets/
+credentials.json
+service-account*.json
+.secret
+*.keystore
+
+# --- Web3 / wallets ---
+keypair*.json
+wallet*.json
+*.mnemonic
+mnemonic.txt
+.anchor/
+test-ledger/
+
+# --- Claude Code local settings ---
+.claude/settings.local.json
+
+# --- Dependencies & builds ---
+node_modules/
+dist/
+build/
+.next/
+out/
+target/
+coverage/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# --- Logs & OS/editor junk ---
+*.log
+npm-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
