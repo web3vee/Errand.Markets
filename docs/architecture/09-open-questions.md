@@ -1,5 +1,13 @@
 # 09 — Open questions (product decisions I need from you)
 
+## Decisions log
+
+| Date | Decision |
+|---|---|
+| 2026-11-26 | All recommended defaults accepted. **Q0 = Option A** (Supabase Auth + Send-SMS hook; Termii NG, Twilio Messaging VC). **Q2 = yes** (Paystack: collect to platform balance, release via Transfers). |
+
+Still open after that: **Q1 for VC** (the default named no single option), **Q4 fee numbers**, and the Stage 2 visual direction (A or B).
+
 Each has a **recommended default** so you can answer "accept default". I won't build anything that depends on an unanswered question; it'll stay configurable or stubbed.
 
 ## Blocking Stage 3 (auth)

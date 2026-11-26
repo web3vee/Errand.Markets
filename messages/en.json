@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "title": "Errand.markets — The marketplace for getting things done",
+    "description": "Post an errand, choose a verified Runner, and pay only when it's done. Now in {region}."
+  },
+  "brand": {
+    "name": "Errand.markets",
+    "tagline": "The marketplace for getting things done."
+  },
+  "nav": {
+    "label": "Main",
+    "howItWorks": "How it works",
+    "runners": "Runners",
+    "business": "Business",
+    "menu": "Menu",
+    "skipToContent": "Skip to content"
+  },
+  "market": {
+    "label": "Market",
+    "switch": "Change market",
+    "current": "{market} · {currency}",
+    "pricesIn": "Prices in {symbol} ({code})",
+    "nowIn": "Now in {region}",
+    "areasLabel": "Service areas",
+    "pickerTitle": "Where do you need things done?",
+    "pickerLead": "Choose your market to see local prices and service areas. You can change this any time.",
+    "pickerMore": "More countries are on the way.",
+    "choose": "Choose {market}",
+    "nowInAreas": "<strong>Now in {region}:</strong> {areas}"
+  },
+  "markets": {
+    "NG": {
+      "name": "Nigeria",
+      "launchRegion": "Abuja",
+      "runnerId": "Your NIN and a quick selfie check"
+    },
+    "VC": {
+      "name": "St. Vincent",
+      "launchRegion": "mainland St. Vincent",
+      "runnerId": "A national ID card, passport or driver's licence, and a quick selfie check"
+    }
+  },
+  "areas": {
+    "wuse-2": "Wuse 2",
+    "maitama": "Maitama",
+    "garki": "Garki",
+    "wuse": "Wuse",
+    "jabi": "Jabi",
+    "kingstown": "Kingstown",
+    "arnos-vale": "Arnos Vale",
+    "calliaqua": "Calliaqua",
+    "villa": "Villa",
+    "campden-park": "Campden Park",
+    "mesopotamia": "Mesopotamia"
+  },
+  "hero": {
+    "eyebrow": "The marketplace for getting things done",
+    "title": "Got something to do? Let someone do it for you.",
+    "lead": "Post an errand, choose a verified Runner, and pay only for work that gets done. Your payment is held until you confirm.",
+    "ctaPost": "Post an errand",
+    "ctaRunner": "Become a Runner",
+    "quickStart": "Start with",
+    "ledger": {
+      "title": "Example errand",
+      "errand": "Collect documents",
+      "where": "{area}",
+      "held": "Your payment stays on hold until you confirm.",
+      "steps": {
+        "posted": "Posted",
+        "chosen": "Runner chosen",
+        "held": "Payment held",
+        "proof": "Photo proof",
+        "released": "Confirmed and released"
+      },
+      "done": "Done",
+      "now": "Now",
+      "next": "Next"
+    }
+  },
+  "how": {
+    "eyebrow": "How it works",
+    "title": "From to-do to done, in five steps.",
+    "steps": {
+      "post": {
+        "title": "Post your errand",
+        "body": "Say what you need, where and when. Drop a pin and add a landmark so your Runner finds you."
+      },
+      "offers": {
+        "title": "Get offers",
+        "body": "Verified Runners nearby send offers, or accept the price you set."
+      },
+      "pay": {
+        "title": "Choose and pay",
+        "body": "Pick your Runner and pay upfront. Your money is held, not paid out, until the job is done."
+      },
+      "track": {
+        "title": "Track and chat",
+        "body": "Message your Runner, follow progress, and get photo proof when it's finished."
+      },
+      "confirm": {
+        "title": "Confirm",
+        "body": "Confirm and your Runner gets paid. If something's wrong, raise a dispute and our team steps in."
+      }
+    }
+  },
+  "categories": {
+    "eyebrow": "What you can post",
+    "title": "Errands, big and small.",
+    "shopping": {
+      "name": "Shopping",
+      "description": "Groceries, household items and market runs. Your Runner shares the receipt."
+    },
+    "pickup": {
+      "name": "Pickups",
+      "description": "Collect orders, parcels and items from shops or people."
+    },
+    "documents": {
+      "name": "Documents",
+      "description": "Collect or drop off documents at offices and agencies."
+    },
+    "delivery": {
+      "name": "Deliveries",
+      "description": "Send something across town, door to door."
+    },
+    "business": {
+      "name": "Business tasks",
+      "description": "Office runs, supplies and errands for your business."
+    }
+  },
+  "runner": {
+    "eyebrow": "Become a Runner",
+    "title": "Earn by getting things done nearby.",
+    "lead": "Choose the errands you want, set your offer, and get paid to your bank account once the customer confirms.",
+    "needsTitle": "What you'll need",
+    "needs": {
+      "age": "To be 18 or older",
+      "phone": "A smartphone with data",
+      "id": "{idRequirement}",
+      "area": "To be based in {region}"
+    },
+    "cta": "Become a Runner"
+  },
+  "trust": {
+    "eyebrow": "Trust and safety",
+    "title": "Built so both sides can trust the deal.",
+    "items": {
+      "escrow": {
+        "title": "Payment held until done",
+        "body": "You pay upfront. The Runner is paid only after you confirm, or automatically if you don't respond in time."
+      },
+      "verified": {
+        "title": "Verified Runners",
+        "body": "Every Runner passes an ID and selfie check before taking their first errand."
+      },
+      "proof": {
+        "title": "Proof of completion",
+        "body": "Runners upload a photo when the job is done, and receipts for anything they buy."
+      },
+      "ratings": {
+        "title": "Ratings both ways",
+        "body": "Customers and Runners rate each other after every errand."
+      },
+      "disputes": {
+        "title": "Disputes, handled",
+        "body": "If something goes wrong, payment is frozen until our team resolves it."
+      },
+      "report": {
+        "title": "Report and block",
+        "body": "Report anyone who breaks the rules, and block people you don't want to work with."
+      }
+    }
+  },
+  "business": {
+    "eyebrow": "For businesses",
+    "title": "An extra pair of hands, on demand.",
+    "lead": "Send documents, restock supplies and handle runs across town without adding staff.",
+    "soon": "Business accounts with team access and monthly invoicing are coming soon.",
+    "cta": "Post a business errand"
+  },
+  "rides": {
+    "badge": "Coming soon",
+    "title": "Rides",
+    "body": "Get where you're going with the same account and the same trusted people."
+  },
+  "footer": {
+    "rights": "© {year} Errand.markets",
+    "market": "You're viewing {market}."
+  },
+  "getStarted": {
+    "title": "Almost there",
+    "post": "Posting errands opens soon in {region}.",
+    "runner": "Runner sign-up opens soon in {region}.",
+    "back": "Back to home"
+  },
+  "preview": {
+    "label": "Design direction",
+    "a": "A · Ledger",
+    "b": "B · Signal"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "back": "Go home"
+  }
+}
