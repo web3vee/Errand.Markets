@@ -26,7 +26,7 @@ const TYPE: [string, string, string][] = [
   ['text-h1', 'H1', 'Errands, big and small.'],
   ['text-h2', 'H2', 'Built so both sides can trust the deal.'],
   ['text-h3', 'H3', 'Payment held until done'],
-  ['text-lead', 'Lead', 'Post an errand, choose a verified Runner, and pay only for work that gets done.'],
+  ['text-lead', 'Lead', 'Post an errand at your price. A verified Runner nearby accepts it.'],
   ['text-body', 'Body', 'Message your Runner, follow progress, and get photo proof when it’s finished.'],
   ['text-small', 'Small', 'Prices in ₦ (NGN) · Now in Abuja'],
   ['text-micro', 'Micro', 'EXAMPLE ERRAND · EC$ · XCD'],
