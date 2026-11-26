@@ -4,16 +4,15 @@ import { listMarketViews } from '@/modules/markets/view';
 import { LogoMark } from '@/ui/brand/logo';
 import { contrastRatio } from '@/ui/contrast';
 import { HeroLedger } from '@/ui/home/hero-ledger';
-import { HeroSignal, SpeedLines } from '@/ui/home/hero-signal';
 import { IconArrow, IconCheck } from '@/ui/icons';
 import { Badge } from '@/ui/primitives/badge';
 import { Button } from '@/ui/primitives/button';
 import { Container } from '@/ui/primitives/container';
-import { directions, type ColorTokens, type Direction } from '@/ui/tokens';
+import { theme, type ColorTokens } from '@/ui/tokens';
 
 /**
- * Internal design-system reference (not user-facing, not indexed): tokens, type scale and
- * components for both Stage 2 directions, side by side, plus each hero in full.
+ * Internal design-system reference (not user-facing, not indexed): tokens, type scale,
+ * components and the hero.
  */
 export const metadata: Metadata = { title: 'Design system — Errand.markets', robots: { index: false, follow: false } };
 
@@ -33,19 +32,20 @@ const TYPE: [string, string, string][] = [
   ['text-micro', 'Micro', 'EXAMPLE ERRAND · EC$ · XCD'],
 ];
 
-function DirectionSpec({ d }: { d: Direction }) {
+function ThemeSpec() {
+  const d = theme;
   return (
-    <div data-direction={d.id} className="rounded-lg border border-line p-5 sm:p-8">
+    <div className="rounded-lg border border-line p-5 sm:p-8">
       <div className="flex items-center gap-3">
         <LogoMark className="h-7" />
         <div>
-          <p className="text-micro font-medium uppercase text-ink-3">Direction {d.id.toUpperCase()}</p>
+          <p className="text-micro font-medium uppercase text-ink-3">Direction A</p>
           <h2 className="text-h2">{d.name}</h2>
         </div>
       </div>
       <p className="mt-4 max-w-[36rem] text-body text-ink-2">{d.summary}</p>
       <p className="mt-2 text-small text-ink-3">
-        Typeface: {d.id === 'a' ? 'Geist' : 'Inter'} · Radius {d.radius} · Accent {d.light.accent} / dark {d.dark.accent}
+        Typeface: Geist · Radius {d.radius} · Accent {d.light.accent} / dark {d.dark.accent}
       </p>
 
       <h3 className="mt-10 text-small font-medium text-ink-3">Colour tokens (light / dark)</h3>
@@ -100,12 +100,6 @@ function DirectionSpec({ d }: { d: Direction }) {
         ))}
       </ul>
 
-      {d.id === 'b' ? (
-        <>
-          <h3 className="mt-10 text-small font-medium text-ink-3">Motif</h3>
-          <SpeedLines className="mt-3 text-accent" />
-        </>
-      ) : null}
     </div>
   );
 }
@@ -113,7 +107,7 @@ function DirectionSpec({ d }: { d: Direction }) {
 export default async function DesignPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [ng, vc] = await listMarketViews(locale);
+  const [ng] = await listMarketViews(locale);
 
   return (
     <main id="main" className="pb-24">
@@ -121,20 +115,17 @@ export default async function DesignPage({ params }: { params: Promise<{ locale:
         <p className="text-small font-medium text-ink-3">Internal · Stage 2</p>
         <h1 className="mt-2 text-h1">Design system</h1>
         <p className="mt-3 max-w-[40rem] text-body text-ink-2">
-          Two directions share one structure: the same tokens, type scale and components, with different values. Motion is 150–250&nbsp;ms and switches off under
+          Direction A (Ledger), chosen in Stage 2. Motion is 150–250&nbsp;ms and switches off under
           prefers-reduced-motion. Every tap target is at least 44&nbsp;px, and layouts use logical properties so they mirror for right-to-left scripts.
         </p>
-        <div className="mt-10 grid gap-6 xl:grid-cols-2">
-          <DirectionSpec d={directions.a} />
-          <DirectionSpec d={directions.b} />
+        <div className="mt-10">
+          <ThemeSpec />
         </div>
       </Container>
-      {ng && vc ? (
+      {ng ? (
         <>
-          <Container><h2 className="mt-8 text-h2">Hero A · Ledger (Nigeria)</h2></Container>
-          <div data-direction="a" className="mt-4 border-y border-line"><HeroLedger locale={locale} market={ng} standalone /></div>
-          <Container><h2 className="mt-12 text-h2">Hero B · Signal (St. Vincent)</h2></Container>
-          <div data-direction="b" className="mt-4 border-y border-line"><HeroSignal locale={locale} market={vc} standalone /></div>
+          <Container><h2 className="mt-8 text-h2">Hero</h2></Container>
+          <div className="mt-4 border-y border-line"><HeroLedger locale={locale} market={ng} /></div>
         </>
       ) : null}
     </main>

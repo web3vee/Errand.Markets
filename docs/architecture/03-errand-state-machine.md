@@ -17,12 +17,13 @@ stateDiagram-v2
   draft --> open: publish [price ≥ market min, pins in service area, prohibited-item screen passes]
   draft --> cancelled: customer cancels
 
-  open --> offer_accepted: customer accepts offer [runner KYC approved, same market, not blocked]
+  open --> open: customer edits price [no Runner has accepted yet]
+  open --> offer_accepted: first eligible Runner accepts the customer's price [KYC approved, same market, not blocked]
   open --> cancelled: customer cancels (free)
   open --> expired: expires_at reached (job)
 
   offer_accepted --> funded: payment_confirmed (verified webhook / server verify)
-  offer_accepted --> open: funding timeout or payment failed (offer released)
+  offer_accepted --> open: funding timeout or payment failed (Runner released)
   offer_accepted --> cancelled: customer or runner cancels (no funds held → free)
 
   funded --> in_progress: runner starts
@@ -51,13 +52,16 @@ stateDiagram-v2
 
 ## Transition table
 
+> Pricing model (decided 2026-11-26): the **customer sets the price** and can edit it while the errand is `open`. The **first eligible Runner to accept** gets the errand. Runner counter-offers are switched off (`runner_rules.pricing_control = 'customer_fixed'`), but the `offers` table stays so they can be enabled per market later. The state keeps the brief's name `offer_accepted`, which now means "a Runner accepted the customer's price".
+
 | From | Event | To | Actor | Guards | Effects |
 |---|---|---|---|---|---|
 | draft | `publish` | open | customer | category active in market; ≥1 stop; every pin inside an active `service_area` of the market (PostGIS `ST_Covers`); `customer_budget ≥ min_errand_price`; prohibited-item screen (`block` → reject; `flag_for_review` → see 09) | set `expires_at`; schedule `errand.expire`; notify eligible Runners in area |
-| open | `accept_offer` | offer_accepted | customer | offer pending; Runner eligible (role, KYC approved, same market, not blocked, under `max_concurrent_errands`); offer amount ≥ min | other offers → `superseded`; compute and freeze `quote` + `fee_schedule_id`; create `payment_intent`; schedule funding timeout |
+| open | `edit_price` | open | customer | no Runner has accepted; new price ≥ `min_errand_price` | notify Runners already viewing the errand |
+| open | `accept` | offer_accepted | runner | Runner eligible (role, KYC approved, same market, not blocked, under `max_concurrent_errands`). **First accept wins**: a conditional update (`… WHERE status = 'open' AND version = $v`) under a row lock, so two simultaneous accepts can't both succeed. | record the acceptance (an `offers` row at the customer's price, status `accepted`); freeze `quote` + `fee_schedule_id`; create `payment_intent`; ask customer to pay; schedule funding timeout |
 | offer_accepted | `payment_confirmed` | funded | provider | intent amount == quote total, currency matches, intent belongs to errand | ledger `escrow_funded`; open full-detail access for Runner; notify both |
 | offer_accepted | `funding_timeout` / `payment_failed` | open | system | — | offer → `expired`; re-notify area |
-| funded | `start` | in_progress | runner | is assigned Runner | if purchase: item-cost advance (see 04 and 09 Q1) |
+| funded | `start` | in_progress | runner | is assigned Runner | — (for purchase errands the Runner buys items with their own money and is reimbursed at release; see 04) |
 | in_progress | `request_topup` | in_progress | runner | requires_purchase; before purchase | create `purchase_reconciliation(topup_request)`; customer approves → new `payment_intent(topup)` |
 | in_progress | `complete` | completed_pending_confirmation | runner | ≥1 `proof` media; if purchase: `receipt` media + `actual_minor` recorded and any top-up funded | reconcile surplus (see 04); `auto_release_at = now + auto_release_hours`; schedule reminders at `reminder_offsets_hours` (push + SMS) and auto-release |
 | completed_pending_confirmation | `confirm` | confirmed | customer | — | cancel reminder/auto-release jobs; ledger `escrow_released`; queue payout |

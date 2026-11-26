@@ -6,8 +6,8 @@ import { Button } from '@/ui/primitives/button';
 import { Container } from '@/ui/primitives/container';
 import { AreaStrip } from './area-strip';
 
-/** Direction A — "Ledger": statement-like, left-aligned, with an escrow timeline that explains the trust model in type alone. */
-export async function HeroLedger({ locale, market, standalone = false }: { locale: string; market: MarketView; standalone?: boolean }) {
+/** Statement-like hero with an example-errand timeline that explains the held-payment model in type alone. */
+export async function HeroLedger({ locale, market }: { locale: string; market: MarketView }) {
   const t = await getTranslations();
   const home = `/${locale}/${market.slug}`;
   const steps = [
@@ -20,7 +20,7 @@ export async function HeroLedger({ locale, market, standalone = false }: { local
   const firstArea = market.serviceAreas.find((a) => a.active);
 
   return (
-    <section aria-labelledby="hero-title" className={`${standalone ? '' : 'dir-a-only'} border-b border-line`}>
+    <section aria-labelledby="hero-title" className="border-b border-line">
       <Container className="grid gap-12 py-14 md:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] md:items-end md:gap-16 md:py-24">
         <div>
           <p className="text-small font-medium text-ink-3">{t('hero.eyebrow')}</p>

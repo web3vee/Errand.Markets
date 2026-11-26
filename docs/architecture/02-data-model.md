@@ -277,10 +277,10 @@ erDiagram
     text description
     enum status "see 03"
     int version "optimistic lock"
-    enum pricing_mode "offers|fixed"
+    enum pricing_mode "fixed (launch) | offers"
     char3 currency
     bigint customer_budget_minor "fixed price or budget hint"
-    bigint errand_fee_minor "agreed, from accepted offer"
+    bigint errand_fee_minor "customer price; editable while open"
     bool requires_purchase
     bigint item_cost_estimate_minor
     uuid accepted_offer_id FK

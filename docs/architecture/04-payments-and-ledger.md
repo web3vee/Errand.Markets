@@ -1,14 +1,16 @@
 # 04 — Payments, fees, tax & ledger
 
-> ⚠️ Two flags change the money design and need your decision before Stage 6. Details in [09](./09-open-questions.md):
-> 1. **"Runners never front their own money" requires paying the item cost to the Runner *before* purchase.** Escrow alone doesn't do that. (Q1)
-> 2. **Paystack has no native escrow "hold".** Subaccount splits settle automatically to the subaccount, which defeats escrow. The workable pattern is to collect into the platform balance and release via the Transfers API. (Q2)
+> Decisions (2026-11-26, see [09](./09-open-questions.md)):
+> - **Price:** set by the customer (editable while open); the first eligible Runner to accept gets the errand.
+> - **Commission: 0 at launch** (`commission_bps = 0`). The commission and tax steps still run, so turning it on later is config only.
+> - **Items:** the Runner buys with their own money and is **reimbursed when the errand is released**. This replaces the brief's "Runners never front their own money" rule, so there is no item-cost advance. Details still open: Q1a–Q1c.
+> - **Paystack:** collect into the platform balance; release via the Transfers API (Q2).
 
 ## 1. Pricing pipeline (pure, in `src/modules/pricing/domain`)
 
 ```
 quote(market, feeSchedule, taxRules, runnerRules, input) → Quote
-input = { errandFeeMinor, itemCostEstimateMinor, requiresPurchase }
+input = { errandFeeMinor /* the customer's price */, itemCostEstimateMinor, requiresPurchase }
 ```
 
 Steps, all integer math in minor units:
@@ -31,7 +33,6 @@ Unit-tested with property tests (fast-check). Invariants: customer total = Σ cu
 |---|---|---|---|
 | `provider_clearing` | asset | provider (`paystack`, `scotia_ecom`) | Money sitting at the PSP / merchant account |
 | `bank_operating` | asset | platform | Platform bank account (VC payouts are paid from here) |
-| `runner_advance` | asset | user (Runner) | Item-cost money advanced to a Runner, not yet backed by a receipt |
 | `customer_escrow` | liability | errand | Funds held for one errand. **Must be 0 at every terminal state.** |
 | `runner_payable` | liability | user (Runner) | Earned, not yet paid out |
 | `payouts_in_transit` | liability | platform | Payout initiated, not yet confirmed |
@@ -49,10 +50,8 @@ Unit-tested with property tests (fast-check). Invariants: customer total = Σ cu
 |---|---|---|---|
 | `escrow_funded` | verified payment success | provider_clearing T | customer_escrow[errand] T |
 | `provider_fee` | fee known from PSP | provider_fees f | provider_clearing f |
-| `item_advance` | Runner starts (purchase errand), see Q1 | runner_advance[runner] E | payouts_in_transit E → on success: provider_clearing / bank |
 | `topup_funded` | verified top-up payment | provider_clearing Δ | customer_escrow Δ |
-| `escrow_released` | confirm / auto-release | customer_escrow T | runner_payable (F − C − tax on C), commission_revenue C, service_fee_revenue S, tax_payable X, runner_advance A, refunds_payable (E − A) if surplus |
-| `advance_surplus_recovered` | receipt shows A < advanced | runner_payable (adv − A) | runner_advance (adv − A) |
+| `escrow_released` | confirm / auto-release | customer_escrow T | runner_payable (F − C − tax on C **+ A**, the receipt reimbursement), commission_revenue C (0 at launch), service_fee_revenue S, tax_payable X, refunds_payable (E − A) if the receipt is under the estimate |
 | `cancellation_settled` | cancel after funding | customer_escrow T | runner_payable fee, refunds_payable remainder (service-fee treatment: Q5) |
 | `refund_initiated` / `refund_settled` | admin/system → PSP confirm | customer_escrow → refunds_payable, then refunds_payable | refunds_payable, then provider_clearing |
 | `payout_initiated` | payout created | runner_payable P | payouts_in_transit P |
@@ -83,7 +82,7 @@ sequenceDiagram
   App->>PS: GET /transaction/verify/:reference (amount, currency, status)
   App->>App: tx: ledger escrow_funded + errand → funded (idempotent)
   App-->>Ru: Notify: funded, go
-  Note over App,Ru: if purchase: item_advance via Transfers (Q1)
+  Note over App,Ru: purchase errands: Runner pays at the shop, reimbursed at release
   Ru->>App: complete + proof (+ receipt)
   Cu->>App: confirm (or auto-release at +24h)
   App->>App: ledger escrow_released

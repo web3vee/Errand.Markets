@@ -15,6 +15,6 @@ pnpm test                    # unit tests (Vitest)
 pnpm typecheck && pnpm build
 ```
 
-Useful URLs: `/en` (detected market, or the picker), `/en/ng`, `/en/vc`, `/en/markets`, `/en/design`. Add `?direction=a|b` to preview a visual direction.
+Useful URLs: `/en` (detected market, or the picker), `/en/ng`, `/en/vc`, `/en/markets`, `/en/design`.
 
 Layout QA: `ENABLE_PSEUDO_LOCALES=1 pnpm dev`, then open `/en-XA/ng` (long strings) or `/ar-XB/vc` (right-to-left).

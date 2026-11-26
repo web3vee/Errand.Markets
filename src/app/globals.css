@@ -66,7 +66,7 @@
     -webkit-font-smoothing: antialiased;
     color-scheme: light dark;
   }
-  body, [data-direction] {
+  body {
     background: var(--bg);
     color: var(--ink);
     font-family: var(--font-sans);
@@ -96,7 +96,3 @@
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
 }
-
-/* Stage 2 preview: both hero directions ship; the html attribute picks one. Removed after the direction is chosen. */
-html[data-direction="b"] .dir-a-only { display: none; }
-html:not([data-direction="b"]) .dir-b-only { display: none; }

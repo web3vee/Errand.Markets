@@ -5,7 +5,6 @@ import { routing } from '@/i18n/routing';
 import { marketSource } from '@/modules/markets/source';
 import { getMarketView, listMarketViews } from '@/modules/markets/view';
 import { HeroLedger } from '@/ui/home/hero-ledger';
-import { HeroSignal } from '@/ui/home/hero-signal';
 import { BecomeRunner, Categories, ForBusiness, HowItWorks, RidesTeaser, TrustSafety } from '@/ui/home/sections';
 import { SiteFooter } from '@/ui/home/site-footer';
 import { SiteHeader } from '@/ui/home/site-header';
@@ -47,7 +46,6 @@ export default async function MarketHome({ params }: { params: Promise<Params> }
       <SiteHeader locale={locale} market={market} markets={markets} />
       <main id="main">
         <HeroLedger {...p} />
-        <HeroSignal {...p} />
         <HowItWorks {...p} />
         <Categories {...p} />
         <BecomeRunner {...p} />

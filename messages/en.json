@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Errand.markets — The marketplace for getting things done",
-    "description": "Post an errand, choose a verified Runner, and pay only when it's done. Now in {region}."
+    "description": "Post an errand at your price, a verified Runner accepts, and you pay only when it's done. Now in {region}."
   },
   "brand": {
     "name": "Errand.markets",
@@ -56,10 +56,9 @@
   "hero": {
     "eyebrow": "The marketplace for getting things done",
     "title": "Got something to do? Let someone do it for you.",
-    "lead": "Post an errand, choose a verified Runner, and pay only for work that gets done. Your payment is held until you confirm.",
+    "lead": "Post an errand at your price. A verified Runner nearby accepts it, and your payment is held until you confirm the job is done.",
     "ctaPost": "Post an errand",
     "ctaRunner": "Become a Runner",
-    "quickStart": "Start with",
     "ledger": {
       "title": "Example errand",
       "errand": "Collect documents",
@@ -67,7 +66,7 @@
       "held": "Your payment stays on hold until you confirm.",
       "steps": {
         "posted": "Posted",
-        "chosen": "Runner chosen",
+        "chosen": "Runner accepted",
         "held": "Payment held",
         "proof": "Photo proof",
         "released": "Confirmed and released"
@@ -83,15 +82,15 @@
     "steps": {
       "post": {
         "title": "Post your errand",
-        "body": "Say what you need, where and when. Drop a pin and add a landmark so your Runner finds you."
+        "body": "Say what you need, where and when, and set the price you're willing to pay. Drop a pin and add a landmark so your Runner finds you."
       },
       "offers": {
-        "title": "Get offers",
-        "body": "Verified Runners nearby send offers, or accept the price you set."
+        "title": "A Runner accepts",
+        "body": "The first verified Runner nearby to accept your price takes the errand. No reply? Raise your price any time before someone accepts."
       },
       "pay": {
-        "title": "Choose and pay",
-        "body": "Pick your Runner and pay upfront. Your money is held, not paid out, until the job is done."
+        "title": "Pay upfront",
+        "body": "Your money is held, not paid out, until the job is done."
       },
       "track": {
         "title": "Track and chat",
@@ -130,7 +129,7 @@
   "runner": {
     "eyebrow": "Become a Runner",
     "title": "Earn by getting things done nearby.",
-    "lead": "Choose the errands you want, set your offer, and get paid to your bank account once the customer confirms.",
+    "lead": "Accept the errands you want at the price shown, and get paid to your bank account once the customer confirms. Buying items? You're reimbursed for the receipt amount.",
     "needsTitle": "What you'll need",
     "needs": {
       "age": "To be 18 or older",
@@ -191,11 +190,6 @@
     "post": "Posting errands opens soon in {region}.",
     "runner": "Runner sign-up opens soon in {region}.",
     "back": "Back to home"
-  },
-  "preview": {
-    "label": "Design direction",
-    "a": "A · Ledger",
-    "b": "B · Signal"
   },
   "notFound": {
     "title": "Page not found",

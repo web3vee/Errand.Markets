@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { contrastRatio } from '@/ui/contrast';
-import { directions, type ColorTokens } from '@/ui/tokens';
+import { theme, type ColorTokens } from '@/ui/tokens';
 
 // [foreground, background, minimum ratio, why]
 const PAIRS: [keyof ColorTokens, keyof ColorTokens, number, string][] = [
@@ -19,13 +19,11 @@ const PAIRS: [keyof ColorTokens, keyof ColorTokens, number, string][] = [
   ['ink', 'accentSoft', 4.5, 'text on selection/soft accent'],
 ];
 
-for (const d of Object.values(directions)) {
-  for (const scheme of ['light', 'dark'] as const) {
-    describe(`direction ${d.id} (${d.name}) — ${scheme}`, () => {
-      const t = d[scheme];
-      it.each(PAIRS)('%s on %s ≥ %s — %s', (fg, bg, min) => {
-        expect(contrastRatio(t[fg], t[bg])).toBeGreaterThanOrEqual(min);
-      });
+for (const scheme of ['light', 'dark'] as const) {
+  describe(`${theme.name} — ${scheme}`, () => {
+    const t: ColorTokens = theme[scheme];
+    it.each(PAIRS)('%s on %s ≥ %s — %s', (fg, bg, min) => {
+      expect(contrastRatio(t[fg], t[bg])).toBeGreaterThanOrEqual(min);
     });
-  }
+  });
 }
