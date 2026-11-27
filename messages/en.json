@@ -1,0 +1,743 @@
+{
+  "meta": {
+    "title": "Errand.markets — The marketplace for getting things done",
+    "description": "Post an errand at your price, a verified Runner accepts, and you pay only when it's done. Now in {region}."
+  },
+  "brand": {
+    "name": "Errand.markets",
+    "tagline": "The marketplace for getting things done."
+  },
+  "nav": {
+    "label": "Main",
+    "howItWorks": "How it works",
+    "runners": "Runners",
+    "business": "Business",
+    "menu": "Menu",
+    "skipToContent": "Skip to content",
+    "signIn": "Sign in",
+    "account": "Account",
+    "runner": "Runner",
+    "admin": "Admin",
+    "signOut": "Sign out",
+    "myErrands": "My errands",
+    "findErrands": "Find errands",
+    "myJobs": "My jobs",
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "notificationsCount": "Notifications ({count, plural, one {# unread} other {# unread}})"
+  },
+  "market": {
+    "label": "Market",
+    "switch": "Change market",
+    "current": "{market} · {currency}",
+    "pricesIn": "Prices in {symbol} ({code})",
+    "nowIn": "Now in {region}",
+    "areasLabel": "Service areas",
+    "pickerTitle": "Where do you need things done?",
+    "pickerLead": "Choose your market to see local prices and service areas. You can change this any time.",
+    "pickerMore": "More countries are on the way.",
+    "choose": "Choose {market}",
+    "nowInAreas": "<strong>Now in {region}:</strong> {areas}"
+  },
+  "markets": {
+    "NG": {
+      "name": "Nigeria",
+      "launchRegion": "Abuja",
+      "runnerId": "Your NIN and a quick selfie check"
+    },
+    "VC": {
+      "name": "St. Vincent",
+      "launchRegion": "mainland St. Vincent",
+      "runnerId": "A national ID card, passport or driver's licence, and a quick selfie check"
+    }
+  },
+  "areas": {
+    "wuse-2": "Wuse 2",
+    "maitama": "Maitama",
+    "garki": "Garki",
+    "wuse": "Wuse",
+    "jabi": "Jabi",
+    "kingstown": "Kingstown",
+    "arnos-vale": "Arnos Vale",
+    "calliaqua": "Calliaqua",
+    "villa": "Villa",
+    "campden-park": "Campden Park",
+    "mesopotamia": "Mesopotamia"
+  },
+  "hero": {
+    "eyebrow": "The marketplace for getting things done",
+    "title": "Got something to do? Let someone do it for you.",
+    "lead": "Post an errand at your price. A verified Runner nearby accepts it, and your payment is held until you confirm the job is done.",
+    "ctaPost": "Post an errand",
+    "ctaRunner": "Become a Runner",
+    "ledger": {
+      "title": "Example errand",
+      "errand": "Collect documents",
+      "where": "{area}",
+      "held": "Your payment stays on hold until you confirm.",
+      "steps": {
+        "posted": "Posted",
+        "chosen": "Runner accepted",
+        "held": "Payment held",
+        "proof": "Photo proof",
+        "released": "Confirmed and released"
+      },
+      "done": "Done",
+      "now": "Now",
+      "next": "Next"
+    }
+  },
+  "how": {
+    "eyebrow": "How it works",
+    "title": "From to-do to done, in five steps.",
+    "steps": {
+      "post": {
+        "title": "Post your errand",
+        "body": "Say what you need, where and when, and set the price you're willing to pay. Drop a pin and add a landmark so your Runner finds you."
+      },
+      "offers": {
+        "title": "A Runner accepts",
+        "body": "The first verified Runner nearby to accept your price takes the errand. No reply? Raise your price any time before someone accepts."
+      },
+      "pay": {
+        "title": "Pay upfront",
+        "body": "Your money is held, not paid out, until the job is done."
+      },
+      "track": {
+        "title": "Track and chat",
+        "body": "Message your Runner, follow progress, and get photo proof when it's finished."
+      },
+      "confirm": {
+        "title": "Confirm",
+        "body": "Confirm and your Runner gets paid. If something's wrong, raise a dispute and our team steps in."
+      }
+    }
+  },
+  "categories": {
+    "eyebrow": "What you can post",
+    "title": "Errands, big and small.",
+    "shopping": {
+      "name": "Shopping",
+      "description": "Groceries, household items and market runs. Your Runner shares the receipt."
+    },
+    "pickup": {
+      "name": "Pickups",
+      "description": "Collect orders, parcels and items from shops or people."
+    },
+    "documents": {
+      "name": "Documents",
+      "description": "Collect or drop off documents at offices and agencies."
+    },
+    "delivery": {
+      "name": "Deliveries",
+      "description": "Send something across town, door to door."
+    },
+    "business": {
+      "name": "Business tasks",
+      "description": "Office runs, supplies and errands for your business."
+    }
+  },
+  "runner": {
+    "eyebrow": "Become a Runner",
+    "title": "Earn by getting things done nearby.",
+    "lead": "Accept the errands you want at the price shown, and get paid to your bank account once the customer confirms. Buying items? You're reimbursed for the receipt amount.",
+    "needsTitle": "What you'll need",
+    "needs": {
+      "age": "To be 18 or older",
+      "phone": "A smartphone with data",
+      "id": "{idRequirement}",
+      "area": "To be based in {region}"
+    },
+    "cta": "Become a Runner"
+  },
+  "trust": {
+    "eyebrow": "Trust and safety",
+    "title": "Built so both sides can trust the deal.",
+    "items": {
+      "escrow": {
+        "title": "Payment held until done",
+        "body": "You pay upfront. The Runner is paid only after you confirm, or automatically if you don't respond in time."
+      },
+      "verified": {
+        "title": "Verified Runners",
+        "body": "Every Runner passes an ID and selfie check before taking their first errand."
+      },
+      "proof": {
+        "title": "Proof of completion",
+        "body": "Runners upload a photo when the job is done, and receipts for anything they buy."
+      },
+      "ratings": {
+        "title": "Ratings both ways",
+        "body": "Customers and Runners rate each other after every errand."
+      },
+      "disputes": {
+        "title": "Disputes, handled",
+        "body": "If something goes wrong, payment is frozen until our team resolves it."
+      },
+      "report": {
+        "title": "Report and block",
+        "body": "Report anyone who breaks the rules, and block people you don't want to work with."
+      }
+    }
+  },
+  "business": {
+    "eyebrow": "For businesses",
+    "title": "An extra pair of hands, on demand.",
+    "lead": "Send documents, restock supplies and handle runs across town without adding staff.",
+    "soon": "Business accounts with team access and monthly invoicing are coming soon.",
+    "cta": "Post a business errand"
+  },
+  "rides": {
+    "badge": "Coming soon",
+    "title": "Rides",
+    "body": "Get where you're going with the same account and the same trusted people."
+  },
+  "footer": {
+    "rights": "© {year} Errand.markets",
+    "market": "You're viewing {market}."
+  },
+  "getStarted": {
+    "title": "Almost there",
+    "post": "Posting errands opens soon in {region}.",
+    "runner": "Runner sign-up opens soon in {region}.",
+    "back": "Back to home"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "back": "Go home"
+  },
+  "sandbox": {
+    "banner": "Sandbox — no real SMS or identity checks.",
+    "codeTitle": "Sandbox code",
+    "codeBody": "No SMS was sent. Use this code: {code}",
+    "kycTitle": "Sandbox identity check",
+    "kycLead": "No real verification happens here. Pick the result the provider would send, then submit. This sends a signed webhook through the normal pipeline.",
+    "outcome": "Result",
+    "outcomes": {
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "needs_resubmission": "Needs resubmission"
+    },
+    "docType": "Document",
+    "docTypes": {
+      "nin": "NIN",
+      "passport": "Passport",
+      "drivers_licence": "Driver's licence",
+      "national_id": "National ID card"
+    },
+    "idNumber": "Document number",
+    "name": "Name on document",
+    "dob": "Date of birth",
+    "liveness": "Selfie liveness passed",
+    "submit": "Send result"
+  },
+  "auth": {
+    "signInTitle": "Sign in or create an account",
+    "signInLead": "Enter your {market} mobile number. We'll text you a 6-digit code.",
+    "phoneLabel": "Mobile number",
+    "phoneHint": "For example {example}",
+    "sendCode": "Send code",
+    "verifyTitle": "Enter your code",
+    "verifyLead": "We sent a 6-digit code to <phone>{number}</phone>. It expires in 5 minutes.",
+    "codeLabel": "6-digit code",
+    "verify": "Continue",
+    "resend": "Send a new code",
+    "changeNumber": "Use a different number",
+    "errors": {
+      "invalid_phone": "That doesn't look like a valid mobile number.",
+      "wrong_country": "That number isn't from {market}. Switch market or use a {market} number.",
+      "rate_limited": "Too many attempts. Try again in {minutes, plural, one {# minute} other {# minutes}}.",
+      "resend_cooldown": "Please wait a minute before requesting another code.",
+      "send_failed": "We couldn't send the code. Please try again.",
+      "invalid_code": "That code isn't right. Check it and try again.",
+      "expired": "That code has expired. Request a new one.",
+      "too_many_attempts": "Too many wrong codes. Request a new one.",
+      "session_expired": "Your sign-in session expired. Enter your number again."
+    }
+  },
+  "onboarding": {
+    "title": "What should we call you?",
+    "lead": "Runners and customers see this name.",
+    "nameLabel": "Your name",
+    "continue": "Continue",
+    "errors": {
+      "name": "Enter a name between 2 and 60 characters."
+    }
+  },
+  "account": {
+    "title": "Your account",
+    "name": "Name",
+    "phone": "Mobile number",
+    "market": "Market",
+    "roles": "Roles",
+    "edit": "Edit",
+    "save": "Save",
+    "saved": "Saved.",
+    "roleNames": {
+      "customer": "Customer",
+      "runner": "Runner",
+      "admin": "Admin"
+    },
+    "runnerCtaTitle": "Want to earn as a Runner?",
+    "runnerCtaBody": "Verify your identity once, then accept errands near you.",
+    "runnerCta": "Become a Runner",
+    "runnerStatusTitle": "Runner status",
+    "manageRunner": "Runner profile",
+    "postSoon": "Need something done?",
+    "suspendedTitle": "Account unavailable",
+    "suspendedBody": "Your account isn't active. Contact support for help.",
+    "postCta": "Post an errand"
+  },
+  "runnerOnboarding": {
+    "profileTitle": "Your Runner profile",
+    "profileLead": "Customers see your name and rating. The rest helps us match you to errands.",
+    "bio": "About you (optional)",
+    "bioHint": "One or two sentences, e.g. how long you've lived in the area.",
+    "vehicle": "How do you get around?",
+    "vehicles": {
+      "none": "On foot / public transport",
+      "bicycle": "Bicycle",
+      "motorbike": "Motorbike",
+      "car": "Car"
+    },
+    "areas": "Where can you run errands?",
+    "areasHint": "Pick at least one area.",
+    "emergencyTitle": "Emergency contact (optional)",
+    "emergencyName": "Name",
+    "emergencyPhone": "Mobile number",
+    "save": "Save and continue",
+    "errors": {
+      "already_approved": "You're already verified.",
+      "in_review": "Your verification is already under review.",
+      "not_a_runner": "Set up your Runner profile first."
+    },
+    "verifyTitle": "Verify your identity",
+    "verifyLead": "Before your first errand we check your ID and take a quick selfie. It takes about 3 minutes.",
+    "needs": "You'll need: {requirement}",
+    "start": "Start verification",
+    "retry": "Try again",
+    "continueProfile": "Edit Runner profile",
+    "status": {
+      "not_started": {
+        "title": "Not verified yet",
+        "body": "Verify your identity to start accepting errands."
+      },
+      "pending": {
+        "title": "Verification in progress",
+        "body": "Finish the steps with our verification partner. If you closed it, start again."
+      },
+      "in_review": {
+        "title": "Under review",
+        "body": "Your documents passed the automatic checks. Our team will review them shortly."
+      },
+      "resubmission_required": {
+        "title": "Please try again",
+        "body": "We couldn't confirm your identity from that attempt. Check your document is clear and try again."
+      },
+      "approved": {
+        "title": "You're verified",
+        "body": "You can accept errands in your areas once errands open."
+      },
+      "rejected": {
+        "title": "Verification unsuccessful",
+        "body": "We couldn't approve your Runner account. Contact support if you think this is a mistake."
+      }
+    },
+    "launchUnavailable": "Identity verification is unavailable right now. Please try again later."
+  },
+  "admin": {
+    "title": "Admin",
+    "runnersTitle": "Runner verification",
+    "scopeAll": "All markets",
+    "scope": "Markets: {markets}",
+    "filters": {
+      "market": "Market",
+      "status": "Status",
+      "all": "All",
+      "apply": "Apply"
+    },
+    "columns": {
+      "runner": "Runner",
+      "market": "Market",
+      "submitted": "Submitted (market time)",
+      "status": "Status",
+      "flags": "Flags"
+    },
+    "empty": "Nothing to review.",
+    "detailTitle": "Review Runner",
+    "provider": "Provider",
+    "checks": "Checks",
+    "document": "Document",
+    "nameOnDocument": "Name on document",
+    "age": "Age",
+    "flagsTitle": "Flags",
+    "none": "None",
+    "passed": "Passed",
+    "failed": "Failed",
+    "checkNames": {
+      "id_document": "ID document",
+      "id_number": "ID number lookup",
+      "liveness": "Selfie liveness",
+      "face_match": "Face match"
+    },
+    "flagNames": {
+      "underage": "Under minimum age",
+      "duplicate_identity": "ID already used by another account",
+      "name_mismatch": "Name differs from profile",
+      "failed_checks": "A check failed",
+      "missing_date_of_birth": "No date of birth returned"
+    },
+    "decision": "Decision",
+    "approve": "Approve",
+    "reject": "Reject",
+    "requestResubmission": "Ask to resubmit",
+    "reason": "Reason",
+    "note": "Note (internal)",
+    "submit": "Save decision",
+    "reasons": {
+      "document_unclear": "Document unclear",
+      "name_mismatch": "Name mismatch",
+      "underage": "Under minimum age",
+      "duplicate_account": "Duplicate account",
+      "failed_liveness": "Failed liveness",
+      "other": "Other"
+    },
+    "decided": "Decision saved.",
+    "notAllowed": "That decision isn't allowed for this verification's current state.",
+    "reasonRequired": "Choose a reason.",
+    "reviewed": "Reviewed {when} · {reason}",
+    "back": "Back to list"
+  },
+  "statuses": {
+    "not_started": "Not started",
+    "pending": "With provider",
+    "in_review": "Needs review",
+    "resubmission_required": "Resubmit",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
+  "sms": {
+    "otp": "Your Errand.markets code is {code}. It expires in 5 minutes. Never share it."
+  },
+  "common": {
+    "back": "Back",
+    "optional": "optional",
+    "error": "Something went wrong. Please try again."
+  },
+  "kycDocTypes": {
+    "nin": "NIN (National Identification Number)",
+    "passport": "Passport",
+    "drivers_licence": "Driver's licence",
+    "national_id": "National ID card",
+    "other": "Other document"
+  },
+  "verificationStatuses": {
+    "created": "Started",
+    "submitted": "Submitted to provider",
+    "provider_approved": "Passed provider checks",
+    "provider_rejected": "Failed provider checks",
+    "needs_resubmission": "Resubmission requested",
+    "admin_approved": "Approved",
+    "admin_rejected": "Rejected",
+    "cancelled": "Cancelled"
+  },
+  "notify": {
+    "errand_nearby": {
+      "title": "New errand near you",
+      "body": "{title} · {price}"
+    },
+    "errand_accepted": {
+      "title": "A Runner accepted your errand",
+      "body": "{runner} accepted “{title}”."
+    },
+    "errand_taken": {
+      "title": "Errand taken",
+      "body": "“{title}” was accepted by another Runner."
+    },
+    "errand_expired": {
+      "title": "Errand expired",
+      "body": "Nobody accepted “{title}” in time. You can post it again with a higher price."
+    },
+    "errand_review_cleared": {
+      "title": "Your errand is live",
+      "body": "“{title}” passed review and is now visible to Runners."
+    },
+    "errand_review_rejected": {
+      "title": "Errand not allowed",
+      "body": "“{title}” can't be posted because it includes items we don't allow."
+    },
+    "new_message": {
+      "title": "New message",
+      "body": "{sender}: {preview}"
+    },
+    "kyc_approved": {
+      "title": "You're verified",
+      "body": "You can now accept errands on Errand.markets."
+    },
+    "kyc_rejected": {
+      "title": "Verification unsuccessful",
+      "body": "We couldn't approve your Runner account. Contact support for help."
+    },
+    "kyc_resubmission": {
+      "title": "Please verify again",
+      "body": "We need you to redo your identity check."
+    },
+    "sms": "Errand.markets: {title}. {body}"
+  },
+  "errandStatus": {
+    "draft": "Draft",
+    "open": "Open",
+    "offer_accepted": "Runner accepted",
+    "funded": "Paid",
+    "in_progress": "In progress",
+    "completed_pending_confirmation": "Awaiting your confirmation",
+    "confirmed": "Confirmed",
+    "paid_out": "Completed",
+    "cancelled": "Cancelled",
+    "disputed": "In dispute",
+    "refunded": "Refunded",
+    "expired": "Expired",
+    "pending_review": "Under review"
+  },
+  "stopKinds": {
+    "pickup": "Pick up from",
+    "purchase": "Buy at",
+    "collect": "Collect from",
+    "dropoff": "Deliver to"
+  },
+  "post": {
+    "title": "Post an errand",
+    "lead": "Say what you need. Set the price you're willing to pay — the first verified Runner to accept it takes the job.",
+    "category": "What kind of errand?",
+    "titleLabel": "Short title",
+    "titleHint": "For example “Collect my passport from the embassy”.",
+    "description": "Details",
+    "descriptionHint": "What exactly should the Runner do? Anything they should know?",
+    "buying": "The Runner needs to buy things for me",
+    "items": "What to buy",
+    "itemName": "Item",
+    "itemQty": "Qty",
+    "itemPrice": "Est. price each",
+    "addItem": "Add item",
+    "removeItem": "Remove",
+    "itemsHint": "The Runner pays at the shop with their own money and is reimbursed for the receipt amount when you confirm.",
+    "itemTotal": "Estimated items total: {amount}",
+    "pickupTitle": "Where should the Runner go first? (optional)",
+    "pickupKind": "What happens there?",
+    "noPickup": "Nowhere first",
+    "dropoffTitle": "Where should it end up?",
+    "area": "Area",
+    "areaHint": "We currently operate in these areas.",
+    "useLocation": "Use my current location",
+    "locating": "Finding you…",
+    "locationSet": "Pin set from your location.",
+    "locationOutside": "Your location is outside our service areas. Choose an area instead.",
+    "locationDenied": "Location unavailable. Choose an area instead.",
+    "landmark": "Landmark / directions",
+    "landmarkHint": "For example “Blue gate opposite Shoprite Jabi, 2nd floor”.",
+    "contactName": "Contact name (optional)",
+    "contactPhone": "Contact phone (optional)",
+    "instructions": "Instructions for this stop (optional)",
+    "price": "Your price",
+    "priceHint": "What you'll pay the Runner for the errand ({code}). A {rate} service fee is added. You can raise the price later if nobody accepts.",
+    "priceMin": "Minimum: {amount}",
+    "when": "When?",
+    "asap": "As soon as possible",
+    "byTime": "By a specific time",
+    "byTimeLabel": "Done by ({tz})",
+    "photos": "Photos (optional)",
+    "photosHint": "Up to 3. Photos are compressed and location data is removed.",
+    "addPhoto": "Add photo",
+    "uploading": "Uploading…",
+    "removePhoto": "Remove photo",
+    "submit": "Post errand",
+    "saveDraft": "Save as draft",
+    "errors": {
+      "invalid_category": "Choose a category.",
+      "purchase_not_allowed": "This category doesn't allow buying items.",
+      "price_required": "Enter a price.",
+      "price_below_minimum": "The minimum price is {amount}.",
+      "items_required": "Add at least one item to buy.",
+      "items_over_cap": "Items can't cost more than {amount} in total.",
+      "dropoff_required": "Add where it should end up.",
+      "invalid_window": "Pick a time between 15 minutes and 30 days from now.",
+      "invalid_area": "Choose an area.",
+      "pin_outside_area": "That pin is outside the selected area.",
+      "invalid_pin": "That location isn't valid.",
+      "prohibited": "We can't accept errands involving: {labels}.",
+      "account_not_allowed": "Your account can't post errands right now.",
+      "title": "Add a short title (3–80 characters).",
+      "description": "Add details (up to 2,000 characters).",
+      "landmark": "Add a landmark or directions (3–200 characters).",
+      "phone": "Enter a valid phone number or leave it empty.",
+      "amount": "Enter a valid amount.",
+      "upload": "That photo couldn't be uploaded. Use a JPG, PNG or WebP under 8 MB."
+    },
+    "heldForReview": "Thanks — your errand is being reviewed before it goes live. We'll notify you.",
+    "posted": "Your errand is live. We'll tell you when a Runner accepts.",
+    "pickupKindPickup": "Pick something up",
+    "pickupKindPurchase": "Buy the items here",
+    "pickupKindCollect": "Collect documents",
+    "pickupToggle": "The Runner needs to go somewhere first"
+  },
+  "errands": {
+    "title": "My errands",
+    "empty": "You haven't posted any errands yet.",
+    "new": "Post an errand",
+    "drafts": "Drafts",
+    "active": "Active",
+    "past": "Past",
+    "detailTitle": "Errand",
+    "price": "Price",
+    "items": "Items to buy",
+    "itemsTotal": "Estimated total {amount}",
+    "stops": "Route",
+    "photos": "Photos",
+    "timeline": "Activity",
+    "when": "When",
+    "asap": "As soon as possible",
+    "by": "By {time}",
+    "expires": "Open until {time}",
+    "editPrice": "Change price",
+    "savePrice": "Save price",
+    "priceSaved": "Price updated.",
+    "priceLocked": "The price can't change after a Runner accepts.",
+    "stale": "The errand changed while you were editing. Reload and try again.",
+    "publish": "Post now",
+    "questions": "Questions from Runners",
+    "noQuestions": "No questions yet.",
+    "runner": "Your Runner",
+    "chat": "Message",
+    "awaitingPayment": "{runner} accepted. Payment opens in the next release — your Runner will start once it's paid.",
+    "reviewPending": "Under review: this errand mentions something on our restricted list ({note}). An admin will check it shortly.",
+    "reviewRejected": "This errand wasn't allowed.",
+    "events": {
+      "created": "Created",
+      "published": "Posted",
+      "held_for_review": "Held for review",
+      "review_cleared": "Approved by review",
+      "review_rejected": "Rejected by review",
+      "price_changed": "Price changed",
+      "runner_accepted": "Runner accepted",
+      "expired": "Expired"
+    },
+    "contact": "Contact"
+  },
+  "market2": {
+    "approxAreas": "Areas are approximate while we finalise boundaries."
+  },
+  "runnerMarket": {
+    "title": "Find errands",
+    "lead": "Open errands in your areas. Accept one at the price shown — first to accept gets it.",
+    "notVerified": "Verify your identity to see and accept errands.",
+    "verifyCta": "Verify now",
+    "filters": {
+      "areas": "Areas",
+      "mine": "My areas",
+      "all": "All areas",
+      "category": "Category",
+      "any": "Any",
+      "apply": "Apply"
+    },
+    "empty": "No open errands right now. We'll notify you when one comes up.",
+    "noAreas": "Add service areas to your Runner profile to see errands.",
+    "posted": "Posted {when}",
+    "itemsEstimate": "+ items ≈ {amount} (reimbursed)",
+    "accept": "Accept for {amount}",
+    "ask": "Ask a question",
+    "acceptHelp": "By accepting you agree to do this errand. Exact address and contact details unlock once the customer has paid.",
+    "accepted": "You accepted this errand. We've told the customer.",
+    "more": "Older errands",
+    "errors": {
+      "not_open": "Sorry — this errand is no longer available.",
+      "own_errand": "You can't accept your own errand.",
+      "not_verified": "Verify your identity first.",
+      "wrong_market": "This errand is in another market.",
+      "blocked": "You can't accept this errand.",
+      "too_many_active": "You already have {max} active errands. Finish one first.",
+      "under_review": "This errand is under review.",
+      "price_changed": "The customer just changed the price to {amount}. Check and accept again.",
+      "not_found": "Errand not found."
+    },
+    "jobsTitle": "My jobs",
+    "jobsEmpty": "You haven't accepted any errands yet.",
+    "waitingPayment": "Waiting for the customer to pay. Exact address and contact details unlock after payment.",
+    "areaOnly": "Area: {areas}"
+  },
+  "chat": {
+    "inbox": "Messages",
+    "empty": "No conversations yet.",
+    "about": "About: {title}",
+    "with": "with {name}",
+    "you": "You",
+    "placeholder": "Write a message",
+    "send": "Send",
+    "attach": "Attach photo",
+    "readOnly": "This conversation is closed.",
+    "new": "New",
+    "report": "Report",
+    "block": "Block",
+    "unblock": "Unblock",
+    "blocked": "You blocked this person. They can't message you or take your errands.",
+    "reportTitle": "Report this person",
+    "reportReason": "Reason",
+    "reportDetails": "What happened? (optional)",
+    "reportSubmit": "Send report",
+    "reported": "Thanks — our team will look into it.",
+    "reasons": {
+      "harassment": "Harassment or abuse",
+      "scam": "Scam or fraud",
+      "prohibited_item": "Prohibited item",
+      "unsafe": "Safety concern",
+      "no_show": "Didn't show up",
+      "other": "Other"
+    },
+    "errors": {
+      "not_found": "Conversation not found.",
+      "not_allowed": "You can't message here.",
+      "read_only": "This conversation is closed.",
+      "blocked": "You can't message this person.",
+      "empty": "Write a message first.",
+      "too_long": "Messages can be up to 2,000 characters.",
+      "not_verified": "Verify your identity first.",
+      "rate_limited": "You're sending messages too quickly."
+    },
+    "photo": "Photo"
+  },
+  "notificationsPage": {
+    "title": "Notifications",
+    "empty": "You're all caught up.",
+    "markAll": "Mark all as read",
+    "pushTitle": "Notifications on this device",
+    "pushOn": "Turn on",
+    "pushOff": "Turn off",
+    "pushEnabled": "On for this device.",
+    "pushUnsupported": "This browser doesn't support notifications. Install the app to your home screen to get them.",
+    "pushNotConfigured": "Push notifications aren't configured in this environment (sandbox).",
+    "pushDenied": "Notifications are blocked in your browser settings."
+  },
+  "adminErrands": {
+    "title": "Errands held for review",
+    "empty": "Nothing held for review.",
+    "matched": "Matched: {note}",
+    "clear": "Allow and publish",
+    "reject": "Reject",
+    "note": "Note (internal)",
+    "done": "Saved.",
+    "nav": "Held errands"
+  },
+  "offline": {
+    "title": "You're offline",
+    "body": "Check your connection and try again. Pages you opened recently may still work."
+  },
+  "pricing": {
+    "title": "What you'll pay",
+    "errandFee": "Errand price",
+    "serviceFee": "Service fee ({rate})",
+    "items": "Items (estimate, held for the Runner)",
+    "total": "Total",
+    "whenPaid": "You pay this after a Runner accepts. Item money is held and settled against the receipt — any difference is refunded or topped up.",
+    "youEarn": "You earn",
+    "itemsReimbursed": "+ items reimbursed against the receipt ({amount})"
+  }
+}

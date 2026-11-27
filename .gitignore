@@ -46,3 +46,11 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# --- From MVP branch (Next.js / Vercel / tests) ---
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+test-results/
+playwright-report/
+.data/

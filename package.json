@@ -1,0 +1,72 @@
+{
+  "name": "errand-markets",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "brand:icons": "node scripts/build-brand-assets.mjs",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/db/setup.ts migrate",
+    "db:local": "tsx --env-file-if-exists=.env.local scripts/db/setup.ts local",
+    "db:local:reset": "tsx --env-file-if-exists=.env.local scripts/db/setup.ts local --reset",
+    "admin:grant": "tsx --env-file-if-exists=.env.local scripts/admin-grant.ts",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "test:e2e": "playwright test --trace off"
+  },
+  "dependencies": {
+    "@formatjs/icu-messageformat-parser": "3.5.23",
+    "@radix-ui/react-slot": "1.5.0",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.119.2",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "drizzle-orm": "0.45.4",
+    "geist": "1.9.2",
+    "inngest": "4.27.0",
+    "jose": "6.2.18",
+    "libphonenumber-js": "1.13.17",
+    "next": "15.5.29",
+    "next-intl": "4.16.2",
+    "postgres": "3.4.9",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "server-only": "0.0.1",
+    "standardwebhooks": "1.3.0",
+    "tailwind-merge": "3.7.1",
+    "web-push": "4.0.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "3.3.7",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/postcss": "4.3.5",
+    "@types/node": "22.20.7",
+    "@types/react": "19.3.3",
+    "@types/react-dom": "19.3.0",
+    "@types/web-push": "3.6.4",
+    "drizzle-kit": "0.31.11",
+    "eslint": "9.39.5",
+    "eslint-config-next": "15.5.29",
+    "potrace": "2.1.8",
+    "sharp": "0.35.5",
+    "tailwindcss": "4.3.5",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vitest": "5.1.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp"
+    ]
+  }
+}
