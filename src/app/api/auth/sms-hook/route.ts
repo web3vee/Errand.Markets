@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   const otp = payload.sms?.otp;
   if (!phone || !otp) return NextResponse.json({ error: { http_code: 400, message: 'missing phone or otp' } }, { status: 400 });
   const country = phoneCountry(phone);
-  const market = (await marketSource().list()).find((m) => m.phone.region === country);
+  const market = (await marketSource().list()).find((m) => !!country && m.phoneRegions.includes(country));
   if (!market) return NextResponse.json({ error: { http_code: 400, message: 'phone not in a supported market' } }, { status: 400 });
   const locale = market.uiLanguages[0] ?? 'en';
   const t = await getTranslations({ locale });

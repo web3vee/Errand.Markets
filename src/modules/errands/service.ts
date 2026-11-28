@@ -5,6 +5,7 @@ import {
   prohibitedItems, runnerProfiles, runnerRules, runnerServiceAreas, serviceAreas, userRoles, users,
 } from '../../../db/schema';
 import { uuidv7 } from '@/lib/ids';
+import type { LocalizedText } from '@/lib/localized-text';
 import { attachErrandMedia } from '../media/service';
 import { areaContaining, isValidLatLng, pointInGeometry, type AreaGeometry } from './domain/geo';
 import { screenText } from './domain/screening';
@@ -255,14 +256,14 @@ export async function getErrandForParticipant(db: Db, claims: JwtClaims, errandI
 
 /** Area names per stop — safe to show anyone who can see the errand (no pins, no contacts). */
 export async function stopAreas(db: Db, errandId: string) {
-  return asSystem(db, 'errands.stopAreas (area names only)', (tx) => tx.select({ seq: errandStops.seq, kind: errandStops.kind, areaId: serviceAreas.id, areaNameKey: serviceAreas.nameKey })
+  return asSystem(db, 'errands.stopAreas (area names only)', (tx) => tx.select({ seq: errandStops.seq, kind: errandStops.kind, areaId: serviceAreas.id, areaName: serviceAreas.name })
     .from(errandStops).innerJoin(places, eq(places.id, errandStops.placeId)).innerJoin(serviceAreas, eq(serviceAreas.id, places.serviceAreaId))
     .where(eq(errandStops.errandId, errandId)).orderBy(asc(errandStops.seq)));
 }
 
 export type OpenErrandCard = {
   id: string; title: string; categoryKey: string; categoryNameKey: string; priceMinor: bigint; currency: string; requiresPurchase: boolean;
-  itemEstimateMinor: bigint; windowKind: string; windowEnd: Date | null; publishedAt: Date | null; expiresAt: Date | null; areaNameKeys: string[];
+  itemEstimateMinor: bigint; windowKind: string; windowEnd: Date | null; publishedAt: Date | null; expiresAt: Date | null; areaNames: LocalizedText[];
 };
 
 /**
@@ -289,10 +290,13 @@ export async function browseOpenErrands(db: Db, runnerId: string, opts: { market
       windowEnd: errands.windowEnd, publishedAt: errands.publishedAt, expiresAt: errands.expiresAt,
     }).from(errands).innerJoin(errandCategories, eq(errandCategories.id, errands.categoryId))
       .where(and(...conds)).orderBy(desc(errands.publishedAt)).limit(Math.min(opts.limit ?? 20, 50));
-    const areaRows = rows.length ? await tx.select({ errandId: errandStops.errandId, nameKey: serviceAreas.nameKey }).from(errandStops)
+    const areaRows = rows.length ? await tx.select({ errandId: errandStops.errandId, areaId: serviceAreas.id, name: serviceAreas.name }).from(errandStops)
       .innerJoin(places, eq(places.id, errandStops.placeId)).innerJoin(serviceAreas, eq(serviceAreas.id, places.serviceAreaId))
       .where(inArray(errandStops.errandId, rows.map((r) => r.id))).orderBy(asc(errandStops.seq)) : [];
-    return rows.map((r) => ({ ...r, areaNameKeys: [...new Set(areaRows.filter((a) => a.errandId === r.id).map((a) => a.nameKey))] }));
+    return rows.map((r) => {
+      const mine = areaRows.filter((a) => a.errandId === r.id);
+      return { ...r, areaNames: mine.filter((a, i) => mine.findIndex((b) => b.areaId === a.areaId) === i).map((a) => a.name) };
+    });
   });
 }
 
@@ -304,7 +308,7 @@ export async function openErrandForRunner(db: Db, runnerId: string, marketId: st
     const [e] = await tx.select({ description: errands.description, version: errands.version, feeScheduleId: errands.feeScheduleId }).from(errands).where(eq(errands.id, errandId));
     const items = await tx.select({ name: errandItems.name, qty: errandItems.qty, estUnitPriceMinor: errandItems.estUnitPriceMinor }).from(errandItems).where(eq(errandItems.errandId, errandId));
     const photos = await tx.select({ id: media.id }).from(media).where(and(eq(media.errandId, errandId), eq(media.kind, 'errand_reference')));
-    const kinds = await tx.select({ kind: errandStops.kind, nameKey: serviceAreas.nameKey }).from(errandStops)
+    const kinds = await tx.select({ kind: errandStops.kind, name: serviceAreas.name }).from(errandStops)
       .innerJoin(places, eq(places.id, errandStops.placeId)).innerJoin(serviceAreas, eq(serviceAreas.id, places.serviceAreaId))
       .where(eq(errandStops.errandId, errandId)).orderBy(asc(errandStops.seq));
     return { ...card, description: e!.description, feeScheduleId: e!.feeScheduleId, items, photoIds: photos.map((p) => p.id), stops: kinds };
@@ -343,7 +347,7 @@ export async function runnersForAreas(db: Db, marketId: string, areaIds: string[
 
 export async function areasWithBoundaries(db: DbLike, marketId: string) {
   const rows = await db.select().from(serviceAreas).where(and(eq(serviceAreas.marketId, marketId), eq(serviceAreas.active, true))).orderBy(asc(serviceAreas.sort));
-  return rows.map((a) => ({ id: a.id, slug: a.slug, nameKey: a.nameKey, center: { lat: Number(a.centerLat), lng: Number(a.centerLng) }, boundary: a.boundary as AreaGeometry | null, boundaryStatus: a.boundaryStatus }));
+  return rows.map((a) => ({ id: a.id, slug: a.slug, name: a.name, center: { lat: Number(a.centerLat), lng: Number(a.centerLng) }, boundary: a.boundary as AreaGeometry | null, boundaryStatus: a.boundaryStatus }));
 }
 export { areaContaining };
 

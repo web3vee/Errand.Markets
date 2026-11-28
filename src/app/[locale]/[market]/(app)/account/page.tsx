@@ -9,6 +9,7 @@ import { Container } from '@/ui/primitives/container';
 import { saveName } from '../onboarding/actions';
 import { NameForm } from '../onboarding/name-form';
 import { becomeRunnerAction } from '../runner/actions';
+import { localized } from '@/lib/localized-text';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations({ locale: (await params).locale });
@@ -20,7 +21,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
   const { account, market } = await requireAccount(locale, slug, `/${locale}/${slug}/account`);
   const t = await getTranslations();
-  const phone = parseMarketPhone(account.phoneE164, market.phone);
+  const phone = parseMarketPhone(account.phoneE164, market.phoneRegions);
   const activeRoles = account.roles.filter((r) => r.status === 'active' && ['customer', 'runner', 'admin'].includes(r.role));
   const isRunner = hasActiveRole(account.roles, 'runner');
   const row = 'grid gap-1 border-t border-line py-4 sm:grid-cols-[10rem_1fr] sm:gap-6';
@@ -28,8 +29,8 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
     <Container className="max-w-[44rem] py-14">
       <h1 className="text-h1">{t('account.title')}</h1>
       <dl className="mt-8 border-b border-line">
-        <div className={row}><dt className="text-small text-ink-3">{t('account.phone')}</dt><dd dir="ltr" className="text-start">{phone.ok ? `${market.phone.countryCode} ${phone.national}` : account.phoneE164}</dd></div>
-        <div className={row}><dt className="text-small text-ink-3">{t('account.market')}</dt><dd>{t(market.nameKey)} · {market.currency.code}</dd></div>
+        <div className={row}><dt className="text-small text-ink-3">{t('account.phone')}</dt><dd dir="ltr" className="text-start">{phone.ok ? phone.international : account.phoneE164}</dd></div>
+        <div className={row}><dt className="text-small text-ink-3">{t('account.market')}</dt><dd>{localized(market.name, locale)} · {market.currency.code}</dd></div>
         <div className={row}>
           <dt className="text-small text-ink-3">{t('account.roles')}</dt>
           <dd className="flex flex-wrap gap-2">{activeRoles.map((r) => <Badge key={r.role}>{t(`account.roleNames.${r.role}`)}</Badge>)}</dd>

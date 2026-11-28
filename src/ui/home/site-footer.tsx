@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import type { MarketView } from '@/modules/markets/view';
 import { Logo } from '@/ui/brand/logo';
 import { Container } from '@/ui/primitives/container';
+import { localized } from '@/lib/localized-text';
 
 export async function SiteFooter({ locale, market, markets }: { locale: string; market: MarketView; markets: MarketView[] }) {
   const t = await getTranslations();
@@ -14,12 +15,12 @@ export async function SiteFooter({ locale, market, markets }: { locale: string; 
           <p className="mt-3 text-small text-ink-2">{t('brand.tagline')}</p>
         </div>
         <div className="text-small text-ink-2">
-          <p>{t('footer.market', { market: t(market.nameKey) })}</p>
+          <p>{t('footer.market', { market: localized(market.name, locale) })}</p>
           <ul className="mt-2 flex flex-wrap gap-x-4">
             {markets.filter((m) => m.slug !== market.slug).map((m) => (
               <li key={m.slug}>
                 <Link href={`/${locale}/${m.slug}`} className="inline-flex min-h-11 items-center underline hover:text-ink">
-                  {t('market.choose', { market: t(m.nameKey) })}
+                  {t('market.choose', { market: localized(m.name, locale) })}
                 </Link>
               </li>
             ))}

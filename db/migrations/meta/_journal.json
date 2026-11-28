@@ -43,6 +43,20 @@
       "when": 1795705912279,
       "tag": "0005_service_fee_5pct",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795868691841,
+      "tag": "0006_market_text_and_phone_regions",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795868709055,
+      "tag": "0007_drop_market_text_keys",
+      "breakpoints": true
     }
   ]
 }

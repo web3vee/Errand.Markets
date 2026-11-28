@@ -5,6 +5,7 @@ import { IconCheck, IconDot } from '@/ui/icons';
 import { Button } from '@/ui/primitives/button';
 import { Container } from '@/ui/primitives/container';
 import { AreaStrip } from './area-strip';
+import { localized } from '@/lib/localized-text';
 
 /** Statement-like hero with an example-errand timeline that explains the held-payment model in type alone. */
 export async function HeroLedger({ locale, market }: { locale: string; market: MarketView }) {
@@ -40,7 +41,7 @@ export async function HeroLedger({ locale, market }: { locale: string; market: M
           </div>
           <div className="px-5 pt-4">
             <p className="text-h3">{t('hero.ledger.errand')}</p>
-            {firstArea ? <p className="text-small text-ink-3">{t('hero.ledger.where', { area: t(firstArea.nameKey) })}</p> : null}
+            {firstArea ? <p className="text-small text-ink-3">{t('hero.ledger.where', { area: localized(firstArea.name, locale) })}</p> : null}
           </div>
           <ol className="mt-4 px-5">
             {steps.map((s) => (

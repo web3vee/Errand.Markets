@@ -64,7 +64,7 @@ export async function postErrandAction(locale: string, marketSlug: string, _prev
   for (const s of p.stops) {
     let phone: string | null = null;
     if (s.contactPhone) {
-      const r = parseMarketPhone(s.contactPhone, market.phone);
+      const r = parseMarketPhone(s.contactPhone, market.phoneRegions);
       if (!r.ok) return { error: t('post.errors.phone'), field: 'stops' };
       phone = r.e164;
     }

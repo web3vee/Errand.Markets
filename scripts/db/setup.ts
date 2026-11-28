@@ -8,9 +8,11 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
 import * as schema from '../../db/schema';
+import type { MarketConfig } from '../../src/modules/markets/domain/schema';
+import { MARKET_SEED } from '../../db/seed/markets';
 import { seed } from './seed';
 
-export async function setupDatabase(url: string, opts: { local: boolean; reset: boolean }) {
+export async function setupDatabase(url: string, opts: { local: boolean; reset: boolean; markets?: MarketConfig[] }) {
   const client = postgres(url, { prepare: false, max: 1, onnotice: () => {} });
   try {
     if (opts.local) {
@@ -21,7 +23,7 @@ export async function setupDatabase(url: string, opts: { local: boolean; reset: 
     }
     const db = drizzle(client, { schema });
     await migrate(db, { migrationsFolder: 'db/migrations' });
-    return await seed(db);
+    return await seed(db, opts.markets ?? MARKET_SEED);
   } finally {
     await client.end();
   }

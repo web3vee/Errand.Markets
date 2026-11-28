@@ -6,6 +6,7 @@ import { Badge } from '@/ui/primitives/badge';
 import { Button } from '@/ui/primitives/button';
 import { Container } from '@/ui/primitives/container';
 import { SectionHeading } from '@/ui/patterns/section-heading';
+import { localized } from '@/lib/localized-text';
 
 type P = { locale: string; market: MarketView };
 const sectionY = 'py-16 md:py-24';
@@ -60,11 +61,11 @@ export async function Categories({ locale, market }: P) {
 
 export async function BecomeRunner({ locale, market }: P) {
   const t = await getTranslations();
-  const region = t(market.launchRegionKey);
+  const region = localized(market.launchRegion, locale);
   const needs = [
     t('runner.needs.age'),
     t('runner.needs.phone'),
-    t('runner.needs.id', { idRequirement: t(`markets.${market.code}.runnerId`) }),
+    t('runner.needs.id', { idRequirement: localized(market.runnerIdRequirement, locale) }),
     t('runner.needs.area', { region }),
   ];
   return (

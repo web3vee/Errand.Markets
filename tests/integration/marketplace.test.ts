@@ -12,23 +12,24 @@ import { resolveMediaForViewer, sanitizeImage, storeImage } from '@/modules/medi
 import { blockUser, getThread, listConversations, MessagingError, sendMessage, startQuestionThread } from '@/modules/messaging/service';
 import { listNotifications, markAllRead, notify, unreadCount } from '@/modules/notifications/service';
 import { LocalObjectStore } from '@/providers/storage/local';
+import { ALL_MARKET_CODES, firstAreaSlug } from '../fixtures/markets';
 import { db, expectDbError, makeAdmin, makeUser, market } from './helpers';
 
-async function areaOf(code: 'NG' | 'VC', slug: string) {
+async function areaOf(code: string, slug: string) {
   const m = await market(code);
   const [a] = await db().select().from(serviceAreas).where(and(eq(serviceAreas.marketId, m.id), eq(serviceAreas.slug, slug)));
   return a!;
 }
-async function verifiedRunner(code: 'NG' | 'VC', areaSlug: string, name = 'Runner') {
+async function verifiedRunner(code: string, areaSlug: string, name = 'Runner') {
   const u = await makeUser(code, name);
   await becomeRunner(db(), u.id);
   await updateRunnerProfile(db(), u.claims, { bio: null, vehicle: 'none', emergencyContactName: null, emergencyContactPhone: null, serviceAreaIds: [(await areaOf(code, areaSlug)).id] });
   await db().update(runnerProfiles).set({ kycStatus: 'approved', kycApprovedAt: new Date() }).where(eq(runnerProfiles.userId, u.id));
   return u;
 }
-async function post(code: 'NG' | 'VC', customerId: string, over: Partial<CreateErrandInput> = {}) {
+async function post(code: string, customerId: string, over: Partial<CreateErrandInput> = {}) {
   const m = await market(code);
-  const area = await areaOf(code, code === 'NG' ? 'wuse-2' : 'kingstown');
+  const area = await areaOf(code, firstAreaSlug(code));
   return createErrand(db(), {
     customerId, marketId: m.id, categoryKey: 'delivery', title: 'Deliver a parcel', description: 'Small box', priceMinor: 250000n,
     requiresPurchase: false, items: [], windowKind: 'asap', windowEnd: null, mediaIds: [], publish: true,
@@ -52,8 +53,8 @@ describe('state machine parity', () => {
   });
 });
 
-describe.each(['NG', 'VC'] as const)('marketplace — %s', (code) => {
-  const area = code === 'NG' ? 'wuse-2' : 'kingstown';
+describe.each(ALL_MARKET_CODES)('marketplace — %s', (code) => {
+  const area = firstAreaSlug(code);
   it('post → browse (safe fields only) → first Runner wins → details stay hidden until paid', async () => {
     const customer = await makeUser(code, 'Customer');
     const r1 = await verifiedRunner(code, area, 'R One');
@@ -65,7 +66,7 @@ describe.each(['NG', 'VC'] as const)('marketplace — %s', (code) => {
     const card = cards.find((c) => c.id === errandId)!;
     expect(card).toBeTruthy();
     expect(JSON.stringify(card, (_k, v) => (typeof v === 'bigint' ? v.toString() : v))).not.toMatch(/Blue gate|landmark|customer/i);
-    expect(Object.keys(card).sort()).toEqual(['areaNameKeys', 'categoryKey', 'categoryNameKey', 'currency', 'expiresAt', 'id', 'itemEstimateMinor', 'priceMinor', 'publishedAt', 'requiresPurchase', 'title', 'windowEnd', 'windowKind']);
+    expect(Object.keys(card).sort()).toEqual(['areaNames', 'categoryKey', 'categoryNameKey', 'currency', 'expiresAt', 'id', 'itemEstimateMinor', 'priceMinor', 'publishedAt', 'requiresPurchase', 'title', 'windowEnd', 'windowKind']);
 
     const detail = await openErrandForRunner(db(), r1.id, customer.marketId, errandId);
     expect(detail?.description).toBe('Small box');
@@ -95,7 +96,7 @@ describe.each(['NG', 'VC'] as const)('marketplace — %s', (code) => {
 });
 
 describe('launch fee decisions (2026-11-26)', () => {
-  it.each(['NG', 'VC'] as const)('%s: 5%% service fee, no commission, no minimum price; errands freeze the schedule they were posted under', async (code) => {
+  it.each(ALL_MARKET_CODES)('%s: 5%% service fee, no commission, no minimum price; errands freeze the schedule they were posted under', async (code) => {
     const m = await market(code);
     const [f] = await db().select().from(marketFeeSchedules).where(and(eq(marketFeeSchedules.marketId, m.id), sql`effective_to is null`));
     expect(f).toMatchObject({ serviceFeeBps: 500, commissionBps: 0, minErrandPriceMinor: null });

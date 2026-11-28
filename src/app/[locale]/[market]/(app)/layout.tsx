@@ -7,6 +7,7 @@ import { currentAccount, defaultDb, getMarket, getSession } from '@/server/conte
 import { authMode } from '@/server/auth';
 import { providerMode } from '@/providers/registry';
 import { AppHeader } from '@/ui/app/app-header';
+import { localized } from '@/lib/localized-text';
 
 /** Signed-in / auth area. Always dynamic (per-user). */
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,6 @@ export default async function AppLayout({ children, params }: { children: ReactN
   setRequestLocale(locale);
   const market = await getMarket(slug);
   if (!market) notFound();
-  const t = await getTranslations();
   const account = await currentAccount();
   const session = await getSession();
   const unread = account && session ? await unreadCount(defaultDb(), session.claims) : 0;
@@ -32,7 +32,7 @@ export default async function AppLayout({ children, params }: { children: ReactN
   const clientMessages = Object.fromEntries(pick.map((k) => [k, (messages as Record<string, unknown>)[k]]));
   return (
     <NextIntlClientProvider locale={locale} messages={clientMessages}>
-      <AppHeader locale={locale} marketSlug={slug} marketName={t(market.nameKey)} account={account} sandbox={sandbox} unread={unread} />
+      <AppHeader locale={locale} marketSlug={slug} marketName={localized(market.name, locale)} account={account} sandbox={sandbox} unread={unread} />
       <main id="main" className="pb-24">{children}</main>
     </NextIntlClientProvider>
   );

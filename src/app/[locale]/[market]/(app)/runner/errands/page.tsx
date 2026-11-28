@@ -8,6 +8,7 @@ import { Select } from '@/ui/forms/fields';
 import { Notice } from '@/ui/forms/fields';
 import { Button } from '@/ui/primitives/button';
 import { Container } from '@/ui/primitives/container';
+import { localized } from '@/lib/localized-text';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations({ locale: (await params).locale });
@@ -61,7 +62,7 @@ export default async function FindErrands({ params, searchParams }: { params: Pr
               <Link href={`/${locale}/${slug}/runner/errands/${r.id}`} className="flex min-h-20 items-center justify-between gap-4 py-4 hover:bg-sunken">
                 <span className="min-w-0">
                   <span className="block truncate font-medium">{r.title}</span>
-                  <span className="block text-small text-ink-3">{t(r.categoryNameKey)} · {r.areaNameKeys.map((k) => t(k)).join(' → ')}</span>
+                  <span className="block text-small text-ink-3">{t(r.categoryNameKey)} · {r.areaNames.map((n) => localized(n, locale)).join(' → ')}</span>
                   {r.publishedAt ? <span className="block text-small text-ink-3">{t('runnerMarket.posted', { when: format.relativeTime(r.publishedAt) })}</span> : null}
                 </span>
                 <span className="flex shrink-0 flex-col items-end">

@@ -12,6 +12,7 @@ import { Container } from '@/ui/primitives/container';
 import { askAction } from '../actions';
 import { acceptAction } from '../actions';
 import { AcceptForm } from '../accept-form';
+import { localized } from '@/lib/localized-text';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations({ locale: (await params).locale });
@@ -51,7 +52,7 @@ export default async function OpenErrand({ params, searchParams }: { params: Pro
         {e.description ? <div className="border-t border-line py-4"><dd className="whitespace-pre-line">{e.description}</dd></div> : null}
         <div className="border-t border-line py-4">
           <dt className="text-small text-ink-3">{t('errands.stops')}</dt>
-          <dd><ol className="mt-2 flex flex-col gap-1">{e.stops.map((s, i) => <li key={i}>{t(`stopKinds.${s.kind}`)} · {t(s.nameKey)}</li>)}</ol></dd>
+          <dd><ol className="mt-2 flex flex-col gap-1">{e.stops.map((s, i) => <li key={i}>{t(`stopKinds.${s.kind}`)} · {localized(s.name, locale)}</li>)}</ol></dd>
         </div>
         <div className="border-t border-line py-4">
           <dt className="text-small text-ink-3">{t('errands.when')}</dt>

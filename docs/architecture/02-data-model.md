@@ -24,13 +24,14 @@ erDiagram
   markets {
     uuid id PK
     char2 code UK "ISO 3166-1: NG, VC"
-    text name_key "i18n key"
+    jsonb name "per UI language: {en: Nigeria}"
+    jsonb launch_region "per UI language: {en: Abuja}"
+    jsonb runner_id_requirement "per UI language"
     enum status "draft|active|paused"
     char3 currency_code "NGN, XCD"
     smallint currency_minor_unit "2 (kobo / cents); never assumed"
     text timezone "Africa/Lagos, America/St_Vincent"
-    char2 phone_region "libphonenumber region: NG, VC"
-    text phone_country_code "+234, +1"
+    text_arr phone_regions "countries whose numbers sign up here, primary first: {NG} or {SN,CI}"
     text phone_national_prefix_pattern "e.g. ^784 for VC within NANP"
     text default_locale "en-NG, en-VC"
     text data_region "eu-west-2 (routing key, see 07)"
@@ -94,7 +95,7 @@ erDiagram
     uuid id PK
     uuid market_id FK
     text slug "wuse-2, kingstown"
-    text name_key
+    jsonb name "per UI language: {en: Wuse 2}"
     geography geom "MultiPolygon, PostGIS"
     text island "nullable; Phase 2 inter-island"
     bool active

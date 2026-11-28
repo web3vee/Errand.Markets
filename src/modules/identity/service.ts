@@ -90,6 +90,6 @@ export async function updateRunnerProfile(db: Db, claims: JwtClaims, input: Runn
 }
 
 export async function listServiceAreas(db: Db, marketId: string) {
-  return db.select({ id: serviceAreas.id, slug: serviceAreas.slug, nameKey: serviceAreas.nameKey })
+  return db.select({ id: serviceAreas.id, slug: serviceAreas.slug, name: serviceAreas.name })
     .from(serviceAreas).where(and(eq(serviceAreas.marketId, marketId), eq(serviceAreas.active, true))).orderBy(serviceAreas.sort);
 }

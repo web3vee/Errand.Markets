@@ -15,7 +15,7 @@
 | Jobs | Inngest | Auto-release, reminders, expiry, payout batches, KYC/payment reconciliation sweeps. |
 | Validation / forms | Zod + React Hook Form | Zod schemas are shared client/server, and the server re-validates. |
 | i18n | next-intl | Locale-prefixed routes `/[locale]/…`. `Intl.NumberFormat`/`DateTimeFormat` for all formatting. Currency precision comes from **our config**, not Intl defaults. |
-| Phone | libphonenumber-js | Validation region and prefix come from `markets.phone_region`, not hardcoded. |
+| Phone | libphonenumber-js | Accepted countries come from `markets.phone_regions` (one or more per market); calling codes come from libphonenumber, not hardcoded. |
 | Hosting | Vercel, functions region `lhr1` | Webhook routes are Node runtime (crypto, raw body). |
 | Tests | Vitest (unit), Vitest + Testcontainers Postgres or Supabase local (integration), Playwright (e2e, Stage 4+) | Money, ledger, tax and state-machine tests from Stage 3 onward. |
 | Package manager | pnpm | |

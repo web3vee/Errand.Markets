@@ -43,7 +43,7 @@ export async function saveRunnerProfile(locale: string, marketSlug: string, _pre
   }
   let emergencyPhone: string | null = null;
   if (parsed.data.emergencyPhone) {
-    const p = parseMarketPhone(parsed.data.emergencyPhone, market.phone);
+    const p = parseMarketPhone(parsed.data.emergencyPhone, market.phoneRegions);
     if (!p.ok) return { error: t('runnerOnboarding.errors.emergency_phone') };
     emergencyPhone = p.e164;
   }

@@ -6,6 +6,7 @@ import { defaultDb, requireAccount } from '@/server/context';
 import { Container } from '@/ui/primitives/container';
 import { saveRunnerProfile } from '../actions';
 import { RunnerProfileForm } from './form';
+import { localized } from '@/lib/localized-text';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations({ locale: (await params).locale });
@@ -18,7 +19,7 @@ export default async function RunnerProfile({ params }: { params: Promise<{ loca
   const { account, market } = await requireAccount(locale, slug, `/${locale}/${slug}/runner/profile`);
   if (!hasActiveRole(account.roles, 'runner') || !account.runner) redirect(`/${locale}/${slug}/account`);
   const t = await getTranslations();
-  const areas = (await listServiceAreas(defaultDb(), market.id)).map((a) => ({ id: a.id, name: t(a.nameKey) }));
+  const areas = (await listServiceAreas(defaultDb(), market.id)).map((a) => ({ id: a.id, name: localized(a.name, locale) }));
   const r = account.runner;
   return (
     <Container className="max-w-[40rem] py-14">

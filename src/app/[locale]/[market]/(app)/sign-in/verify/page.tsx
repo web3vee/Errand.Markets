@@ -23,7 +23,7 @@ export default async function VerifyCode({ params }: { params: Promise<{ locale:
   const flow = await getOtpFlow();
   if (!flow || flow.market !== slug) redirect(`/${locale}/${slug}/sign-in`);
   const t = await getTranslations();
-  const pretty = parseMarketPhone(flow.phone, market.phone);
+  const pretty = parseMarketPhone(flow.phone, market.phoneRegions);
   // SANDBOX ONLY: no SMS is sent, so show the code the sandbox "sent".
   const sandboxSms = authMode() === 'local' && providerMode(market.code) === 'sandbox' ? await latestSandboxSms(flow.phone) : null;
   const sandboxCode = sandboxSms?.body.match(/\b(\d{6})\b/)?.[1];
@@ -32,7 +32,7 @@ export default async function VerifyCode({ params }: { params: Promise<{ locale:
       <h1 className="text-h1">{t('auth.verifyTitle')}</h1>
       <p className="mt-3 text-body text-ink-2">
         {t.rich('auth.verifyLead', {
-          number: pretty.ok ? `${market.phone.countryCode} ${pretty.national}` : flow.phone,
+          number: pretty.ok ? pretty.international : flow.phone,
           phone: (chunks) => <span dir="ltr" className="font-medium text-ink">{chunks}</span>,
         })}
       </p>

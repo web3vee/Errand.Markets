@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { asUser } from '../../db/client';
 import { adminAuditLog, markets, providerWebhookEvents, runnerProfiles, runnerServiceAreas, users } from '../../db/schema';
 import { becomeRunner } from '@/modules/identity/service';
+import { ALL_MARKET_CODES } from '../fixtures/markets';
 import { areas, db, expectDbError, makeAdmin, makeUser } from './helpers';
 
 /** Row-level security + column grants, exercised exactly as the app runs user requests. */
@@ -31,7 +32,7 @@ describe('RLS: users and profiles', () => {
   it('anonymous visitors can read active markets but not users', async () => {
     await db().transaction(async (tx) => {
       await tx.execute(sql`select set_config('role', 'anon', true)`);
-      expect((await tx.select({ code: markets.code }).from(markets)).map((m) => m.code).sort()).toEqual(['NG', 'VC']);
+      expect((await tx.select({ code: markets.code }).from(markets)).map((m) => m.code).sort()).toEqual([...ALL_MARKET_CODES].sort());
       await expectDbError(tx.select().from(users), /permission denied/);
     }).catch((e) => { if (!/permission denied/.test(String(e))) throw e; });
   });

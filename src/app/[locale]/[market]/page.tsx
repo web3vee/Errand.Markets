@@ -8,6 +8,7 @@ import { HeroLedger } from '@/ui/home/hero-ledger';
 import { BecomeRunner, Categories, ForBusiness, HowItWorks, RidesTeaser, TrustSafety } from '@/ui/home/sections';
 import { SiteFooter } from '@/ui/home/site-footer';
 import { SiteHeader } from '@/ui/home/site-header';
+import { localized } from '@/lib/localized-text';
 
 type Params = { locale: string; market: string };
 
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const markets = await marketSource().list();
   return {
     title: t('meta.title'),
-    description: t('meta.description', { region: t(market.launchRegionKey) }),
+    description: t('meta.description', { region: localized(market.launchRegion, locale) }),
     alternates: {
       canonical: `/${locale}/${slug}`,
       languages: Object.fromEntries(markets.map((m) => [`en-${m.code}`, `/${locale}/${m.slug}`])),

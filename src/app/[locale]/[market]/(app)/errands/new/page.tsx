@@ -8,6 +8,7 @@ import { Notice } from '@/ui/forms/fields';
 import { Container } from '@/ui/primitives/container';
 import { postErrandAction } from './actions';
 import { PostErrandForm } from './form';
+import { localized } from '@/lib/localized-text';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations({ locale: (await params).locale });
@@ -32,7 +33,7 @@ export default async function NewErrand({ params, searchParams }: { params: Prom
       <PostErrandForm
         action={postErrandAction.bind(null, locale, slug)}
         categories={cats.map((c) => ({ key: c.key, name: t(c.nameKey), description: t(c.descriptionKey), purchaseAllowed: c.purchaseAllowed }))}
-        areas={areas.map((a) => ({ id: a.id, name: t(a.nameKey), boundary: a.boundary }))}
+        areas={areas.map((a) => ({ id: a.id, name: localized(a.name, locale), boundary: a.boundary }))}
         currencyCode={market.currency.code}
         currencySymbol={currencySymbol(market.currency, market.formatLocale)}
         minPriceLabel={fees.minErrandPriceMinor !== null ? money(market, fees.minErrandPriceMinor, true) : null}

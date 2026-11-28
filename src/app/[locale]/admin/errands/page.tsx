@@ -6,6 +6,7 @@ import { onReviewed } from '@/server/workflows';
 import { Notice, Textarea } from '@/ui/forms/fields';
 import { Button } from '@/ui/primitives/button';
 import { Container } from '@/ui/primitives/container';
+import { localized } from '@/lib/localized-text';
 
 export const dynamic = 'force-dynamic';
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -40,7 +41,7 @@ export default async function HeldErrands({ params, searchParams }: { params: Pr
             const m = await getMarketById(r.marketId);
             return (
               <li key={r.id} className="border-t border-line py-5">
-                <p className="text-small text-ink-3">{m ? t(m.nameKey) : ''} · {format.dateTime(r.createdAt, { dateStyle: 'medium', timeStyle: 'short', timeZone: m?.timezone })}</p>
+                <p className="text-small text-ink-3">{m ? localized(m.name, locale) : ''} · {format.dateTime(r.createdAt, { dateStyle: 'medium', timeStyle: 'short', timeZone: m?.timezone })}</p>
                 <p className="mt-1 font-medium">{r.title}</p>
                 <p className="mt-1 whitespace-pre-line text-small text-ink-2">{r.description}</p>
                 <p className="mt-2 text-small text-danger">{t('adminErrands.matched', { note: r.reviewNote ?? '' })}</p>

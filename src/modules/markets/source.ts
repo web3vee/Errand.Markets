@@ -32,13 +32,13 @@ class DbMarketSource implements MarketConfigSource {
     const areas = await db.select().from(serviceAreas).orderBy(asc(serviceAreas.sort));
     const cats = await db.select().from(errandCategories).orderBy(asc(errandCategories.sort));
     return rows.map((m) => MarketConfig.parse({
-      code: m.code, slug: m.slug, status: m.status, nameKey: m.nameKey, launchRegionKey: m.launchRegionKey,
+      code: m.code, slug: m.slug, status: m.status, name: m.name, launchRegion: m.launchRegion, runnerIdRequirement: m.runnerIdRequirement,
       currency: { code: m.currencyCode, minorUnit: m.currencyMinorUnit, displaySymbol: m.currencyDisplaySymbol },
-      timezone: m.timezone, phone: { region: m.phoneRegion, countryCode: m.phoneCountryCode }, formatLocale: m.formatLocale,
+      timezone: m.timezone, phoneRegions: m.phoneRegions, formatLocale: m.formatLocale,
       uiLanguages: m.uiLanguages, dataRegion: m.dataRegion,
       providers: { payment: m.paymentProvider, payout: m.payoutProvider, kyc: m.kycProvider, sms: m.smsProvider, maps: m.mapsProvider },
       geoCountries: m.geoCountries,
-      serviceAreas: areas.filter((a) => a.marketId === m.id).map((a) => ({ slug: a.slug, nameKey: a.nameKey, island: a.island, active: a.active })),
+      serviceAreas: areas.filter((a) => a.marketId === m.id).map((a) => ({ slug: a.slug, name: a.name, island: a.island, active: a.active })),
       categories: cats.filter((c) => c.marketId === m.id).map((c) => ({ key: c.key, nameKey: c.nameKey, descriptionKey: c.descriptionKey, purchaseAllowed: c.purchaseAllowed, sort: c.sort, active: c.active })),
     })).map((cfg, i) => ({ ...cfg, id: rows[i]!.id, kycAutoApprove: rows[i]!.kycAutoApprove, roundingMode: (rows[i]!.roundingMode === 'half_even' ? 'half_even' : 'half_up') as 'half_up' | 'half_even' }));
   });

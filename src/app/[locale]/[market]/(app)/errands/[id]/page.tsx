@@ -15,6 +15,7 @@ import { Button } from '@/ui/primitives/button';
 import { Container } from '@/ui/primitives/container';
 import { editPriceAction, publishDraftAction } from './actions';
 import { PriceForm } from './price-form';
+import { localized } from '@/lib/localized-text';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations({ locale: (await params).locale });
@@ -88,14 +89,14 @@ export default async function ErrandDetail({ params, searchParams }: {
               {stops.map((s) => {
                 const place = places.find((p) => p.id === s.placeId);
                 const area = areas.find((a) => a.seq === s.seq);
-                const phone = place?.contactPhoneE164 ? parseMarketPhone(place.contactPhoneE164, market.phone) : null;
+                const phone = place?.contactPhoneE164 ? parseMarketPhone(place.contactPhoneE164, market.phoneRegions) : null;
                 return (
                   <li key={s.seq}>
-                    <p className="font-medium">{t(`stopKinds.${s.kind}`)} · {area ? t(area.areaNameKey) : ''}</p>
+                    <p className="font-medium">{t(`stopKinds.${s.kind}`)} · {area ? localized(area.areaName, locale) : ''}</p>
                     {place ? (
                       <>
                         <p className="text-body text-ink-2">{place.landmark}</p>
-                        {place.contactName || phone ? <p className="text-small text-ink-3">{t('errands.contact')}: {place.contactName ?? ''} {phone?.ok ? <a dir="ltr" href={`tel:${place.contactPhoneE164}`} className="underline">{phone.national}</a> : null}</p> : null}
+                        {place.contactName || phone ? <p className="text-small text-ink-3">{t('errands.contact')}: {place.contactName ?? ''} {phone?.ok ? <a dir="ltr" href={`tel:${place.contactPhoneE164}`} className="underline">{phone.country === market.phoneRegions[0] ? phone.national : phone.international}</a> : null}</p> : null}
                       </>
                     ) : null}
                     {s.instructions ? <p className="text-small text-ink-2">{s.instructions}</p> : null}

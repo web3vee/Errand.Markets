@@ -10,6 +10,7 @@ import { Badge } from '@/ui/primitives/badge';
 import { Container } from '@/ui/primitives/container';
 import { decideAction } from '../../actions';
 import { DecisionForm } from './decision-form';
+import { localized } from '@/lib/localized-text';
 
 type Summary = { checks?: { kind: string; passed: boolean }[]; documentType?: string | null; nameOnDocument?: string | null; ageYears?: number | null; flags?: string[] };
 
@@ -35,7 +36,7 @@ export default async function ReviewRunner({ params, searchParams }: { params: P
     <Container className="max-w-[52rem] py-10">
       <Link href={`/${locale}/admin/runners`} className="inline-flex min-h-11 items-center text-small underline">{t('admin.back')}</Link>
       <h1 className="mt-2 text-h1">{r.displayName ?? '—'}</h1>
-      <p className="mt-1 text-small text-ink-3"><span dir="ltr">{maskPhone(r.phoneE164)}</span> · {market ? t(market.nameKey) : ''}</p>
+      <p className="mt-1 text-small text-ink-3"><span dir="ltr">{maskPhone(r.phoneE164)}</span> · {market ? localized(market.name, locale) : ''}</p>
       {(await searchParams).saved ? <div className="mt-6"><Notice tone="success">{t('admin.decided')}</Notice></div> : null}
       <div className="mt-8 grid gap-10 md:grid-cols-[minmax(0,1fr)_18rem]">
         <dl className="border-b border-line">

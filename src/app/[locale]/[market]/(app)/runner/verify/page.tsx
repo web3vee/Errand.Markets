@@ -9,6 +9,7 @@ import { Button } from '@/ui/primitives/button';
 import { Container } from '@/ui/primitives/container';
 import { startKycAction } from '../actions';
 import { StartVerification } from './start';
+import { localized } from '@/lib/localized-text';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations({ locale: (await params).locale });
@@ -29,7 +30,7 @@ export default async function RunnerVerify({ params }: { params: Promise<{ local
     <Container className="max-w-[40rem] py-14">
       <h1 className="text-h1">{t('runnerOnboarding.verifyTitle')}</h1>
       <p className="mt-3 text-body text-ink-2">{t('runnerOnboarding.verifyLead')}</p>
-      <p className="mt-2 text-small text-ink-3">{t('runnerOnboarding.needs', { requirement: t(`markets.${market.code}.runnerId`) })}</p>
+      <p className="mt-2 text-small text-ink-3">{t('runnerOnboarding.needs', { requirement: localized(market.runnerIdRequirement, locale) })}</p>
       <div className="mt-8" data-testid="kyc-status" data-status={status}>
         <Notice tone={status === 'approved' ? 'success' : status === 'rejected' ? 'danger' : 'neutral'}
           title={<span className="inline-flex items-center gap-2">{t(`runnerOnboarding.status.${status}.title`)} <Badge tone={status === 'approved' ? 'accent' : 'neutral'}>{t(`statuses.${status}`)}</Badge></span>}>

@@ -6,25 +6,26 @@ import { becomeRunner, getAccount, updateRunnerProfile } from '@/modules/identit
 import { decideVerification, ingestKycWebhook, KycError, listReviews, startVerification } from '@/modules/kyc/service';
 import { hitRateLimit } from '@/modules/platform/rate-limit';
 import { SANDBOX_SIGNATURE_HEADER, SandboxKyc, signSandboxPayload } from '@/providers/kyc/sandbox';
+import { ALL_MARKET_CODES, otherMarketCode } from '../fixtures/markets';
 import { areas, db, makeAdmin, makeUser, market } from './helpers';
 
 const SECRET = 'test-sandbox-secret';
 const kyc = new SandboxKyc({ secret: SECRET, launchUrl: (id) => `/en/x/runner/verify/sandbox?v=${id}` });
 
-async function runnerWithProfile(code: 'NG' | 'VC', name = 'Ada Obi') {
+async function runnerWithProfile(code: string, name = 'Ada Obi') {
   const u = await makeUser(code, name);
   await becomeRunner(db(), u.id);
   await updateRunnerProfile(db(), u.claims, { bio: null, vehicle: 'motorbike', emergencyContactName: null, emergencyContactPhone: null, serviceAreaIds: [(await areas(code))[0]!.id] });
   return u;
 }
 
-async function start(code: 'NG' | 'VC', u: { id: string; phone: string }) {
+async function start(code: string, u: { id: string; phone: string }) {
   const m = await market(code);
   const ctx = { market: { id: m.id, code, currency: m.currencyCode, minorUnit: m.currencyMinorUnit, timezone: m.timezone, locale: 'en' }, mode: 'sandbox' as const };
   return startVerification(db(), { kyc, ctx, market: { id: m.id, code, kycAutoApprove: m.kycAutoApprove } }, { userId: u.id, phoneE164: u.phone, locale: 'en', returnUrl: '/' });
 }
 
-async function deliver(code: 'NG' | 'VC', p: { verificationId: string; userId: string; outcome?: string; dob?: string; idNumber?: string; name?: string; eventId?: string }) {
+async function deliver(code: string, p: { verificationId: string; userId: string; outcome?: string; dob?: string; idNumber?: string; name?: string; eventId?: string }) {
   const m = await market(code);
   const raw = JSON.stringify({
     eventId: p.eventId ?? randomUUID(), verificationId: p.verificationId, userId: p.userId, outcome: p.outcome ?? 'approved', livenessPassed: true,
@@ -37,7 +38,7 @@ async function deliver(code: 'NG' | 'VC', p: { verificationId: string; userId: s
 
 const runnerStatus = async (id: string) => (await db().select({ s: runnerProfiles.kycStatus }).from(runnerProfiles).where(eq(runnerProfiles.userId, id)))[0]!.s;
 
-describe.each(['NG', 'VC'] as const)('Runner KYC end to end — %s', (code) => {
+describe.each(ALL_MARKET_CODES)('Runner KYC end to end — %s', (code) => {
   it('sign-up → Runner profile → provider approves → admin approves', async () => {
     const r = await runnerWithProfile(code);
     const { verificationId, launch } = await start(code, r);
@@ -71,7 +72,7 @@ describe.each(['NG', 'VC'] as const)('Runner KYC end to end — %s', (code) => {
     const r = await runnerWithProfile(code);
     const { verificationId } = await start(code, r);
     await deliver(code, { verificationId, userId: r.id });
-    const other = code === 'NG' ? 'VC' : 'NG';
+    const other = otherMarketCode(code);
     const foreign = await makeAdmin(other);
     await expect(decideVerification(db(), { adminId: foreign.id, adminScope: [(await market(other)).id], verificationId, decision: 'approve', reasonCode: null, note: null }))
       .rejects.toBeInstanceOf(KycError);

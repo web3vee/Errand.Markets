@@ -28,11 +28,20 @@ pnpm admin:grant --phone +2348031234567 --market NG --perms ops   # or --market 
 
 ```bash
 pnpm test               # unit (money, tax-ready pricing helpers, OTP, RBAC, KYC rules, provider signatures)
-pnpm test:integration   # against local Postgres: RLS, privileges, triggers, KYC flow in NG + VC
+pnpm test:integration   # against local Postgres: RLS, privileges, triggers, KYC flow — every market, plus a test-only third market (XW)
 pnpm build && pnpm start -p 3100 &
 E2E_BASE_URL=http://localhost:3100 pnpm test:e2e   # browser: sign-in → Runner → KYC → admin approval, both markets
 pnpm lint               # includes architecture boundary rules
 ```
+
+### Adding a market
+
+A market is configuration, not code: add an entry to `db/seed/markets.ts` (currency, timezone, phone countries,
+providers, service areas, and its name / launch region / ID requirement / area names per UI language) and run
+`pnpm db:migrate`. Nothing in `messages/*.json` is market-specific. A market can span several countries: list
+them all in `phoneRegions` and `geoCountries`. A market whose SMS or ID-check provider has no adapter yet needs
+one in `src/providers`. Tests run every per-market check against all markets, including the fixture in
+`tests/fixtures/markets.ts`.
 
 ### Useful URLs
 

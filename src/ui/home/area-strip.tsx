@@ -1,18 +1,20 @@
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import type { MarketView } from '@/modules/markets/view';
 import { IconDot } from '@/ui/icons';
+import { localized } from '@/lib/localized-text';
 
 export async function AreaStrip({ market, className = '' }: { market: MarketView; className?: string }) {
   const t = await getTranslations();
   const format = await getFormatter();
-  const areas = market.serviceAreas.filter((a) => a.active).map((a) => t(a.nameKey));
+  const locale = await getLocale();
+  const areas = market.serviceAreas.filter((a) => a.active).map((a) => localized(a.name, locale));
   return (
     <div className={`flex flex-col gap-1 text-small text-ink-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 ${className}`}>
       <p className="inline-flex items-center gap-2">
         <IconDot className="text-accent" />
         <span>
           {t.rich('market.nowInAreas', {
-            region: t(market.launchRegionKey),
+            region: localized(market.launchRegion, locale),
             areas: format.list(areas, { type: 'conjunction' }),
             strong: (c) => <span className="font-medium text-ink">{c}</span>,
           })}

@@ -8,6 +8,7 @@ import { Select } from '@/ui/forms/fields';
 import { Badge } from '@/ui/primitives/badge';
 import { Button } from '@/ui/primitives/button';
 import { Container } from '@/ui/primitives/container';
+import { localized } from '@/lib/localized-text';
 
 const STATUSES = ['in_review', 'pending', 'resubmission_required', 'approved', 'rejected'] as const;
 
@@ -36,13 +37,13 @@ export default async function RunnerReviews({ params, searchParams }: { params: 
     <Container className="py-10">
       <h1 className="text-h1">{t('admin.runnersTitle')}</h1>
       <p className="mt-2 text-small text-ink-3">
-        {scope === 'all' ? t('admin.scopeAll') : t('admin.scope', { markets: format.list(visible.map((m) => t(m.nameKey))) })}
+        {scope === 'all' ? t('admin.scopeAll') : t('admin.scope', { markets: format.list(visible.map((m) => localized(m.name, locale))) })}
       </p>
       <form className="mt-6 flex flex-wrap items-end gap-3" method="get">
         <label className="flex flex-col gap-1.5 text-small font-medium">{t('admin.filters.market')}
           <Select name="market" defaultValue={marketFilter?.slug ?? ''} className="w-48">
             <option value="">{t('admin.filters.all')}</option>
-            {visible.map((m) => <option key={m.slug} value={m.slug}>{t(m.nameKey)}</option>)}
+            {visible.map((m) => <option key={m.slug} value={m.slug}>{localized(m.name, locale)}</option>)}
           </Select>
         </label>
         <label className="flex flex-col gap-1.5 text-small font-medium">{t('admin.filters.status')}
@@ -71,7 +72,7 @@ export default async function RunnerReviews({ params, searchParams }: { params: 
                     <Badge tone={r.runnerStatus === 'in_review' ? 'accent' : 'neutral'}>{t(`statuses.${r.runnerStatus}`)}</Badge>
                   </span>
                   <span className="text-ink-2">
-                    {m ? t(m.nameKey) : '—'}
+                    {m ? localized(m.name, locale) : '—'}
                     {r.submittedAt && m ? <> · <span className="tabular-nums">{format.dateTime(r.submittedAt, { dateStyle: 'medium', timeStyle: 'short', timeZone: m.timezone })}</span></> : null}
                   </span>
                   <span className="text-ink-3">
@@ -105,7 +106,7 @@ export default async function RunnerReviews({ params, searchParams }: { params: 
                         <span dir="ltr" className="text-ink-3">{maskPhone(r.phoneE164)}</span>
                       </Link>
                     </td>
-                    <td className="py-2 pe-4">{m ? t(m.nameKey) : '—'}</td>
+                    <td className="py-2 pe-4">{m ? localized(m.name, locale) : '—'}</td>
                     <td className="py-2 pe-4 tabular-nums">{r.submittedAt && m ? format.dateTime(r.submittedAt, { dateStyle: 'medium', timeStyle: 'short', timeZone: m.timezone }) : '—'}</td>
                     <td className="py-2 pe-4"><Badge tone={r.runnerStatus === 'in_review' ? 'accent' : 'neutral'}>{t(`statuses.${r.runnerStatus}`)}</Badge></td>
                     <td className="py-2">{flags.length ? flags.map((f) => t(`admin.flagNames.${f}`)).join(', ') : <span className="text-ink-3">{t('admin.none')}</span>}</td>

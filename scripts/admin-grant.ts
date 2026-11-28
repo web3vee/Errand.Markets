@@ -14,7 +14,7 @@ const PERMS = ['ops', 'support', 'finance', 'config', 'super'];
 
 async function main() {
   const phone = arg('phone'); const marketCode = arg('market')?.toUpperCase(); const perms = (arg('perms') ?? 'ops').split(',');
-  if (!phone || !marketCode) throw new Error('Usage: --phone +E164 --market NG|VC|ALL [--perms ops,support]');
+  if (!phone || !marketCode) throw new Error('Usage: --phone +E164 --market <CODE>|ALL [--perms ops,support]');
   if (perms.some((p) => !PERMS.includes(p))) throw new Error(`perms must be from ${PERMS.join(', ')}`);
   const url = process.env.DATABASE_URL_EU_WEST_2 ?? process.env.MIGRATE_DATABASE_URL;
   if (!url) throw new Error('Set DATABASE_URL_<REGION>');

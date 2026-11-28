@@ -36,6 +36,12 @@ function walk(els: MessageFormatElement[], mode: 'long' | 'rtl'): MessageFormatE
   });
 }
 
+/** Pseudo-localise plain text that is not an ICU message (e.g. market names stored in config). */
+export function pseudoText(text: string, mode: 'long' | 'rtl'): string {
+  const out = transformText(text, mode);
+  return mode === 'long' ? `[${out}]` : out;
+}
+
 export function pseudoLocalize(message: string, mode: 'long' | 'rtl'): string {
   const ast = walk(parse(message), mode);
   const out = printAST(ast);

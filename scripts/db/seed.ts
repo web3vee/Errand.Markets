@@ -2,17 +2,22 @@ import { and, eq, isNull, sql } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import * as schema from '../../db/schema';
 import { MARKET_SEED } from '../../db/seed/markets';
-import { RUNNER_RULES_SEED } from '../../db/seed/runner-rules';
+import { MarketConfig } from '../../src/modules/markets/domain/schema';
+import { runnerRulesFor } from '../../db/seed/runner-rules';
 import { FEE_SCHEDULE_SEED } from '../../db/seed/fee-schedules';
 import { circlePolygon } from '../../src/modules/errands/domain/geo';
 
-/** Idempotent: upserts markets, current runner rules, service areas and categories. */
-export async function seed(db: PostgresJsDatabase<typeof schema>) {
-  for (const m of MARKET_SEED) {
+/**
+ * Idempotent: upserts markets, current runner rules, service areas and categories.
+ * `markets` defaults to the real seed; tests pass extra fixture markets.
+ */
+export async function seed(db: PostgresJsDatabase<typeof schema>, markets: MarketConfig[] = MARKET_SEED) {
+  for (const raw of markets) {
+    const m = MarketConfig.parse(raw);
     const values = {
-      code: m.code, slug: m.slug, status: m.status, nameKey: m.nameKey, launchRegionKey: m.launchRegionKey,
+      code: m.code, slug: m.slug, status: m.status, name: m.name, launchRegion: m.launchRegion, runnerIdRequirement: m.runnerIdRequirement,
       currencyCode: m.currency.code, currencyMinorUnit: m.currency.minorUnit, currencyDisplaySymbol: m.currency.displaySymbol,
-      timezone: m.timezone, phoneRegion: m.phone.region, phoneCountryCode: m.phone.countryCode, formatLocale: m.formatLocale,
+      timezone: m.timezone, phoneRegions: m.phoneRegions, formatLocale: m.formatLocale,
       uiLanguages: m.uiLanguages, dataRegion: m.dataRegion, paymentProvider: m.providers.payment, payoutProvider: m.providers.payout,
       kycProvider: m.providers.kyc, smsProvider: m.providers.sms, mapsProvider: m.providers.maps, geoCountries: m.geoCountries,
     };
@@ -20,12 +25,9 @@ export async function seed(db: PostgresJsDatabase<typeof schema>) {
       .onConflictDoUpdate({ target: schema.markets.code, set: values }).returning({ id: schema.markets.id });
     const marketId = row!.id;
 
-    const rules = RUNNER_RULES_SEED[m.code];
-    if (rules) {
-      const current = await db.select().from(schema.runnerRules)
-        .where(and(eq(schema.runnerRules.marketId, marketId), isNull(schema.runnerRules.effectiveTo)));
-      if (current.length === 0) await db.insert(schema.runnerRules).values({ marketId, ...rules });
-    }
+    const current = await db.select().from(schema.runnerRules)
+      .where(and(eq(schema.runnerRules.marketId, marketId), isNull(schema.runnerRules.effectiveTo)));
+    if (current.length === 0) await db.insert(schema.runnerRules).values({ marketId, ...runnerRulesFor(m.code) });
     const currentFees = await db.select({ id: schema.marketFeeSchedules.id }).from(schema.marketFeeSchedules)
       .where(and(eq(schema.marketFeeSchedules.marketId, marketId), isNull(schema.marketFeeSchedules.effectiveTo)));
     if (currentFees.length === 0) await db.insert(schema.marketFeeSchedules).values({ marketId, ...FEE_SCHEDULE_SEED, reminderOffsetsHours: [...FEE_SCHEDULE_SEED.reminderOffsetsHours] });
@@ -33,11 +35,11 @@ export async function seed(db: PostgresJsDatabase<typeof schema>) {
       const geo = a.center && a.radiusKm
         ? { centerLat: String(a.center.lat), centerLng: String(a.center.lng), boundary: circlePolygon(a.center, a.radiusKm), boundaryStatus: 'approximate' }
         : {};
-      const v = { nameKey: a.nameKey, island: a.island, active: a.active, sort: i, ...geo };
+      const v = { name: a.name, island: a.island, active: a.active, sort: i, ...geo };
       // Never overwrite a boundary an admin has confirmed.
       const [existing] = await db.select({ status: schema.serviceAreas.boundaryStatus }).from(schema.serviceAreas)
         .where(and(eq(schema.serviceAreas.marketId, marketId), eq(schema.serviceAreas.slug, a.slug)));
-      const set = existing?.status === 'confirmed' ? { nameKey: a.nameKey, island: a.island, active: a.active, sort: i } : v;
+      const set = existing?.status === 'confirmed' ? { name: a.name, island: a.island, active: a.active, sort: i } : v;
       await db.insert(schema.serviceAreas).values({ marketId, slug: a.slug, ...v })
         .onConflictDoUpdate({ target: [schema.serviceAreas.marketId, schema.serviceAreas.slug], set });
     }

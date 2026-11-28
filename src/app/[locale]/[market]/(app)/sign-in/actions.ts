@@ -10,6 +10,7 @@ import { hitRateLimit } from '@/modules/platform/rate-limit';
 import { auth } from '@/server/auth';
 import { clientIp, defaultDb, providersFor, requireMarket } from '@/server/context';
 import { clearOtpFlow, getOtpFlow, setOtpFlow } from '@/server/flow-cookie';
+import { localized } from '@/lib/localized-text';
 
 export type FormState = { error?: string; values?: Record<string, string> } | null;
 
@@ -35,9 +36,9 @@ export async function startSignIn(locale: string, marketSlug: string, _prev: For
   const market = await requireMarket(marketSlug);
   const t = await getTranslations({ locale });
   const raw = String(form.get('phone') ?? '');
-  const parsed = parseMarketPhone(raw, market.phone);
+  const parsed = parseMarketPhone(raw, market.phoneRegions);
   if (!parsed.ok) {
-    return { error: parsed.reason === 'wrong_country' ? t('auth.errors.wrong_country', { market: t(market.nameKey) }) : t('auth.errors.invalid_phone'), values: { phone: raw } };
+    return { error: parsed.reason === 'wrong_country' ? t('auth.errors.wrong_country', { market: localized(market.name, locale) }) : t('auth.errors.invalid_phone'), values: { phone: raw } };
   }
   const err = await sendCode(locale, marketSlug, parsed.e164);
   if (err) return { ...err, values: { phone: raw } };

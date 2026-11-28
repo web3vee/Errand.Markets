@@ -39,31 +39,6 @@
     "choose": "Choose {market}",
     "nowInAreas": "<strong>Now in {region}:</strong> {areas}"
   },
-  "markets": {
-    "NG": {
-      "name": "Nigeria",
-      "launchRegion": "Abuja",
-      "runnerId": "Your NIN and a quick selfie check"
-    },
-    "VC": {
-      "name": "St. Vincent",
-      "launchRegion": "mainland St. Vincent",
-      "runnerId": "A national ID card, passport or driver's licence, and a quick selfie check"
-    }
-  },
-  "areas": {
-    "wuse-2": "Wuse 2",
-    "maitama": "Maitama",
-    "garki": "Garki",
-    "wuse": "Wuse",
-    "jabi": "Jabi",
-    "kingstown": "Kingstown",
-    "arnos-vale": "Arnos Vale",
-    "calliaqua": "Calliaqua",
-    "villa": "Villa",
-    "campden-park": "Campden Park",
-    "mesopotamia": "Mesopotamia"
-  },
   "hero": {
     "eyebrow": "The marketplace for getting things done",
     "title": "Got something to do? Let someone do it for you.",

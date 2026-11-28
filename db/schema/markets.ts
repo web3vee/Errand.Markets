@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { bigint, boolean, char, index, integer, jsonb, numeric, pgTable, smallint, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { bigint, boolean, char, check, index, integer, jsonb, numeric, pgTable, smallint, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 import { marketStatus, pricingControl, prohibitedAction } from './enums';
 
 const timestamps = {
@@ -13,14 +13,16 @@ export const markets = pgTable('markets', {
   code: char('code', { length: 2 }).notNull().unique(),
   slug: text('slug').notNull().unique(),
   status: marketStatus('status').notNull().default('draft'),
-  nameKey: text('name_key').notNull(),
-  launchRegionKey: text('launch_region_key').notNull(),
+  /** Market text keyed by UI language ({"en": "Nigeria"}). See LocalizedText in the market schema. */
+  name: jsonb('name').$type<Record<string, string>>().notNull(),
+  launchRegion: jsonb('launch_region').$type<Record<string, string>>().notNull(),
+  runnerIdRequirement: jsonb('runner_id_requirement').$type<Record<string, string>>().notNull(),
   currencyCode: char('currency_code', { length: 3 }).notNull(),
   currencyMinorUnit: smallint('currency_minor_unit').notNull(),
   currencyDisplaySymbol: text('currency_display_symbol'),
   timezone: text('timezone').notNull(),
-  phoneRegion: char('phone_region', { length: 2 }).notNull(),
-  phoneCountryCode: text('phone_country_code').notNull(),
+  /** Countries whose numbers can sign up here, primary first (ISO 3166-1 alpha-2). */
+  phoneRegions: text('phone_regions').array().notNull(),
   formatLocale: text('format_locale').notNull(),
   uiLanguages: text('ui_languages').array().notNull(),
   dataRegion: text('data_region').notNull(),
@@ -35,7 +37,7 @@ export const markets = pgTable('markets', {
   /** Q8: provider approval alone approves the Runner. Off by default (admin approval required). */
   kycAutoApprove: boolean('kyc_auto_approve').notNull().default(false),
   ...timestamps,
-});
+}, (t) => [check('markets_phone_regions_nonempty', sql`cardinality(${t.phoneRegions}) >= 1`)]);
 
 /** Worker rules per market (versioned; current row has effective_to = null). */
 export const runnerRules = pgTable(
@@ -68,7 +70,7 @@ export const serviceAreas = pgTable(
     id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
     marketId: uuid('market_id').notNull().references(() => markets.id),
     slug: text('slug').notNull(),
-    nameKey: text('name_key').notNull(),
+    name: jsonb('name').$type<Record<string, string>>().notNull(),
     island: text('island'),
     active: boolean('active').notNull().default(true),
     sort: integer('sort').notNull().default(0),
