@@ -33,7 +33,7 @@ export default async function Inbox({ params }: { params: Promise<{ locale: stri
                     <span className="block truncate text-small text-ink-3">{t('chat.about', { title: r.errandTitle })}</span>
                   </span>
                   <span className="flex shrink-0 flex-col items-end gap-1">
-                    {r.lastMessageAt ? <span className="text-micro text-ink-3">{format.dateTime(r.lastMessageAt, { dateStyle: 'short', timeStyle: 'short', timeZone: market.timezone })}</span> : null}
+                    {r.lastMessageAt ? <span className="text-micro text-ink-3">{format.dateTime(r.lastMessageAt, { dateStyle: 'medium', timeStyle: 'short', timeZone: market.timezone })}</span> : null}
                     {r.unread ? <Badge tone="accent">{t('chat.new')}</Badge> : null}
                   </span>
                 </Link>

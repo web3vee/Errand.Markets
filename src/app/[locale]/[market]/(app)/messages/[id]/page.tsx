@@ -43,7 +43,7 @@ export default async function ThreadPage({ params, searchParams }: { params: Pro
       {(await searchParams).reported ? <div className="mt-4"><Notice tone="success">{t('chat.reported')}</Notice></div> : null}
       {iBlocked ? <div className="mt-4"><Notice>{t('chat.blocked')}</Notice></div> : null}
       <Thread
-        conversationId={id} me={account.id} readOnly={c.status !== 'open' || !isParticipant} locale={market.formatLocale} timeZone={market.timezone}
+        conversationId={id} me={account.id} readOnly={c.status !== 'open' || !isParticipant} locale={locale} timeZone={market.timezone}
         initial={thread.messages.map((m) => ({ id: m.id, senderId: m.senderId, body: m.body, mediaId: m.mediaId, createdAt: m.createdAt.toISOString() }))}
         action={sendMessageAction.bind(null, locale, slug, id)} names={Object.fromEntries(names)}
       />

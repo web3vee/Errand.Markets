@@ -46,7 +46,7 @@ export function Thread({ conversationId, me, initial, readOnly, action, names, t
   }, [state?.sentAt]);
   useEffect(() => { endRef.current?.scrollIntoView({ block: 'end' }); }, [msgs.length]);
 
-  const fmt = new Intl.DateTimeFormat(locale, { timeStyle: 'short', dateStyle: 'short', timeZone });
+  const fmt = new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short', timeZone });
   return (
     <>
       <ol className="mt-6 flex flex-col gap-3" aria-live="polite" aria-relevant="additions" data-testid="messages">

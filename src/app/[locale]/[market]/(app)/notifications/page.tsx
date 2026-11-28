@@ -49,7 +49,7 @@ export default async function NotificationsPage({ params }: { params: Promise<{ 
                     <span className={`block ${n.readAt ? 'font-medium' : 'font-semibold'}`}>{!n.readAt ? <span className="me-2 inline-block size-2 rounded-full bg-accent align-middle" aria-hidden /> : null}{text.title}</span>
                     <span className="block text-small text-ink-2">{text.body}</span>
                   </span>
-                  <span className="shrink-0 text-micro text-ink-3">{format.dateTime(n.createdAt, { dateStyle: 'short', timeStyle: 'short', timeZone: market.timezone })}</span>
+                  <span className="shrink-0 text-micro text-ink-3">{format.dateTime(n.createdAt, { dateStyle: 'medium', timeStyle: 'short', timeZone: market.timezone })}</span>
                 </Link>
               </li>
             );
