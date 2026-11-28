@@ -54,8 +54,35 @@ export default async function RunnerReviews({ params, searchParams }: { params: 
         <Button type="submit" variant="secondary">{t('admin.filters.apply')}</Button>
       </form>
 
-      {rows.length === 0 ? <p className="mt-10 text-body text-ink-2">{t('admin.empty')}</p> : (
-        <div className="mt-8 overflow-x-auto">
+      {rows.length === 0 ? <p className="mt-10 text-body text-ink-2">{t('admin.empty')}</p> : (<>
+        {/* Phones: one card per Runner, so status and flags are visible without sideways scrolling. */}
+        <ul className="mt-8 border-t border-line md:hidden">
+          {rows.map((r) => {
+            const m = byId.get(r.marketId);
+            const flags = ((r.summary as { flags?: string[] } | null)?.flags ?? []);
+            return (
+              <li key={r.verificationId} className="border-b border-line">
+                <Link href={`/${locale}/admin/runners/${r.verificationId}`} className="flex flex-col gap-1 py-4 text-small">
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="flex min-w-0 flex-col">
+                      <span className="font-medium text-ink underline-offset-2">{r.displayName ?? '—'}</span>
+                      <span dir="ltr" className="text-ink-3">{maskPhone(r.phoneE164)}</span>
+                    </span>
+                    <Badge tone={r.runnerStatus === 'in_review' ? 'accent' : 'neutral'}>{t(`statuses.${r.runnerStatus}`)}</Badge>
+                  </span>
+                  <span className="text-ink-2">
+                    {m ? t(m.nameKey) : '—'}
+                    {r.submittedAt && m ? <> · <span className="tabular-nums">{format.dateTime(r.submittedAt, { dateStyle: 'medium', timeStyle: 'short', timeZone: m.timezone })}</span></> : null}
+                  </span>
+                  <span className="text-ink-3">
+                    {t('admin.columns.flags')}: {flags.length ? <span className="text-ink">{flags.map((f) => t(`admin.flagNames.${f}`)).join(', ')}</span> : t('admin.none')}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="mt-8 hidden overflow-x-auto md:block">
           <table className="w-full min-w-[44rem] border-collapse text-start text-small">
             <thead>
               <tr className="border-b border-line-strong text-ink-3">
@@ -88,7 +115,7 @@ export default async function RunnerReviews({ params, searchParams }: { params: 
             </tbody>
           </table>
         </div>
-      )}
+      </>)}
     </Container>
   );
 }
