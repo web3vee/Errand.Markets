@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { bigint, bigserial, boolean, char, index, integer, jsonb, numeric, pgTable, smallint, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
-import { actorType, errandReviewState, errandStatus, mediaKind, offerKind, offerStatus, pinSource, pricingMode, stopKind, timeWindowKind } from './enums';
+import { actorType, disputeOutcome, disputeStatus, errandReviewState, errandStatus, mediaKind, offerKind, offerStatus, partyRole, pinSource, pricingMode, stopKind, timeWindowKind } from './enums';
 import { users } from './identity';
 import { errandCategories, marketFeeSchedules, markets, serviceAreas } from './markets';
 
@@ -57,6 +57,10 @@ export const errands = pgTable(
     cancelledAt: timestamp('cancelled_at', { withTimezone: true }),
     cancelledBy: uuid('cancelled_by'),
     cancelReasonCode: text('cancel_reason_code'),
+    /** Stage 5: what the Runner actually spent on items (from the receipt); settled against the estimate in Stage 6. */
+    itemActualMinor: bigint('item_actual_minor', { mode: 'bigint' }),
+    /** Stage 5: how many "please confirm" reminders have gone out (index into the fee schedule's reminder offsets). */
+    remindersSent: smallint('reminders_sent').notNull().default(0),
     priority: text('priority').notNull().default('standard'), // Phase 2: priority fulfilment
     businessAccountId: uuid('business_account_id'), // Phase 2: corporate accounts
     createdAt,
@@ -149,4 +153,49 @@ export const errandEvents = pgTable(
     at: timestamp('at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index('errand_events_errand').on(t.errandId, t.at)],
+);
+
+/** Stage 5: a problem raised by the customer or Runner. Freezes the errand until an admin resolves it. */
+export const disputes = pgTable(
+  'disputes',
+  {
+    id: uuid('id').primaryKey(),
+    marketId: uuid('market_id').notNull().references(() => markets.id),
+    errandId: uuid('errand_id').notNull().references(() => errands.id),
+    raisedBy: uuid('raised_by').notNull().references(() => users.id),
+    raisedRole: partyRole('raised_role').notNull(),
+    fromStatus: errandStatus('from_status').notNull(),
+    reasonCode: text('reason_code').notNull(),
+    details: text('details'),
+    status: disputeStatus('status').notNull().default('open'),
+    outcome: disputeOutcome('outcome'),
+    resolvedBy: uuid('resolved_by').references(() => users.id),
+    resolvedAt: timestamp('resolved_at', { withTimezone: true }),
+    resolutionNote: text('resolution_note'),
+    createdAt,
+  },
+  (t) => [
+    index('disputes_market_status').on(t.marketId, t.status, t.createdAt),
+    uniqueIndex('disputes_one_open_per_errand').on(t.errandId).where(sql`status = 'open'`),
+  ],
+);
+
+/**
+ * Stage 5: two-way ratings after an errand is confirmed. Blind: each side sees the other's rating
+ * only once both have rated or the rating window has closed (app.rating_revealed).
+ */
+export const ratings = pgTable(
+  'ratings',
+  {
+    id: uuid('id').primaryKey(),
+    marketId: uuid('market_id').notNull().references(() => markets.id),
+    errandId: uuid('errand_id').notNull().references(() => errands.id),
+    raterId: uuid('rater_id').notNull().references(() => users.id),
+    rateeId: uuid('ratee_id').notNull().references(() => users.id),
+    raterRole: partyRole('rater_role').notNull(),
+    stars: smallint('stars').notNull(),
+    comment: text('comment'),
+    createdAt,
+  },
+  (t) => [uniqueIndex('ratings_one_per_rater').on(t.errandId, t.raterId), index('ratings_ratee').on(t.rateeId)],
 );

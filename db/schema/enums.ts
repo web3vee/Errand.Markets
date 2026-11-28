@@ -47,3 +47,8 @@ export const conversationStatus = pgEnum('conversation_status', ['open', 'read_o
 export const deliveryChannel = pgEnum('delivery_channel', ['push', 'sms']);
 export const deliveryStatus = pgEnum('delivery_status', ['queued', 'sent', 'failed', 'skipped']);
 export const reportStatus = pgEnum('report_status', ['open', 'actioned', 'dismissed']);
+
+// ── Stage 5: fulfilment ──────────────────────────────────────────────────────
+export const disputeStatus = pgEnum('dispute_status', ['open', 'resolved']);
+export const disputeOutcome = pgEnum('dispute_outcome', ['release_runner', 'refund_customer']);
+export const partyRole = pgEnum('party_role', ['customer', 'runner']);

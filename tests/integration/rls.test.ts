@@ -83,11 +83,11 @@ describe('privilege allow-list', () => {
       'anon:errand_categories:SELECT', 'anon:market_fee_schedules:SELECT', 'anon:markets:SELECT', 'anon:prohibited_items:SELECT',
       'anon:runner_rules:SELECT', 'anon:service_areas:SELECT',
       'authenticated:admin_audit_log:SELECT', 'authenticated:admin_grants:SELECT', 'authenticated:blocks:SELECT', 'authenticated:conversation_reads:SELECT',
-      'authenticated:conversations:SELECT', 'authenticated:customer_profiles:SELECT', 'authenticated:errand_categories:SELECT', 'authenticated:errand_events:SELECT',
+      'authenticated:conversations:SELECT', 'authenticated:customer_profiles:SELECT', 'authenticated:disputes:SELECT', 'authenticated:errand_categories:SELECT', 'authenticated:errand_events:SELECT',
       'authenticated:errand_items:SELECT', 'authenticated:errand_stops:SELECT', 'authenticated:errands:SELECT', 'authenticated:kyc_verifications:SELECT',
       'authenticated:market_fee_schedules:SELECT', 'authenticated:markets:SELECT', 'authenticated:media:SELECT', 'authenticated:messages:SELECT',
       'authenticated:notifications:SELECT', 'authenticated:offers:SELECT', 'authenticated:places:SELECT', 'authenticated:prohibited_items:SELECT',
-      'authenticated:push_subscriptions:DELETE,SELECT', 'authenticated:reports:SELECT', 'authenticated:runner_profiles:SELECT', 'authenticated:runner_rules:SELECT',
+      'authenticated:push_subscriptions:DELETE,SELECT', 'authenticated:ratings:SELECT', 'authenticated:reports:SELECT', 'authenticated:runner_profiles:SELECT', 'authenticated:runner_rules:SELECT',
       'authenticated:runner_service_areas:DELETE,INSERT,SELECT', 'authenticated:service_areas:SELECT', 'authenticated:user_roles:SELECT', 'authenticated:users:SELECT',
     ]);
   });

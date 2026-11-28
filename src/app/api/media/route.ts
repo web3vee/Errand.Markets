@@ -7,6 +7,10 @@ import { currentAccount, defaultDb, getMarketById } from '@/server/context';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+/** Proof and receipt photos (Stage 5) are attached only by the assigned Runner when completing an errand. */
+const UPLOAD_KINDS = ['errand_reference', 'message_photo', 'proof', 'receipt'] as const;
+type UploadKind = (typeof UPLOAD_KINDS)[number];
+
 /** Upload one image (multipart field "file", "kind"). Returns the media id to attach to an errand or message. */
 export async function POST(req: Request) {
   const account = await currentAccount();
@@ -18,12 +22,12 @@ export async function POST(req: Request) {
   const form = await req.formData().catch(() => null);
   const file = form?.get('file');
   const kind = form?.get('kind');
-  if (!(file instanceof Blob) || (kind !== 'errand_reference' && kind !== 'message_photo')) return NextResponse.json({ error: 'bad_request' }, { status: 400 });
+  if (!(file instanceof Blob) || !UPLOAD_KINDS.includes(kind as never)) return NextResponse.json({ error: 'bad_request' }, { status: 400 });
   const market = await getMarketById(account.marketId);
   if (!market?.id) return NextResponse.json({ error: 'bad_request' }, { status: 400 });
   try {
     const r = await storeImage(defaultDb(), objectStore(), {
-      ownerId: account.id, marketId: market.id, marketCode: market.code, kind, bytes: new Uint8Array(await file.arrayBuffer()),
+      ownerId: account.id, marketId: market.id, marketCode: market.code, kind: kind as UploadKind, bytes: new Uint8Array(await file.arrayBuffer()),
     });
     return NextResponse.json(r, { status: 201 });
   } catch (e) {

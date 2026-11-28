@@ -2,6 +2,7 @@ import 'server-only';
 import { eq } from 'drizzle-orm';
 import { errands } from '../../db/schema';
 import { expireDueErrands, runnersForAreas, stopAreas, type acceptErrand, type reviewHeldErrand } from '@/modules/errands/service';
+import { autoReleaseDue, confirmRemindersDue } from '@/modules/errands/fulfilment';
 import { notify, type NotificationType } from '@/modules/notifications/service';
 import { defaultDb, getMarketById } from './context';
 import { deliverNotification } from './deliver-notification';
@@ -60,14 +61,57 @@ export async function onKycDecision(userId: string, marketId: string, runnerStat
   await send([userId], marketId, type, { url: path(m?.slug, '/runner/verify') });
 }
 
+// ── Stage 5: fulfilment ──────────────────────────────────────────────────────
+type Fulfilment = { errandId: string; marketId: string; customerId: string; runnerId: string | null; title: string };
+const errandUrl = async (f: Fulfilment) => path((await getMarketById(f.marketId))?.slug, `/errands/${f.errandId}`);
+
+/** Each step tells the other party (and only them) what happened. */
+export async function onFulfilment(step: 'paid' | 'started' | 'completed' | 'confirmed' | 'cancelled' | 'withdrew', f: Fulfilment, names: { runner?: string; customer?: string } = {}) {
+  const url = await errandUrl(f);
+  const base = { title: f.title, errandId: f.errandId, url, runner: names.runner ?? '', customer: names.customer ?? '' };
+  if (step === 'paid' && f.runnerId) await send([f.runnerId], f.marketId, 'errand_paid', base);
+  if (step === 'started') await send([f.customerId], f.marketId, 'errand_started', base);
+  if (step === 'completed') await send([f.customerId], f.marketId, 'errand_completed', base);
+  if (step === 'confirmed' && f.runnerId) await send([f.runnerId], f.marketId, 'errand_confirmed', base);
+  if (step === 'cancelled' && f.runnerId) await send([f.runnerId], f.marketId, 'errand_cancelled', base);
+  if (step === 'withdrew') {
+    await send([f.customerId], f.marketId, 'runner_withdrew', base);
+    await onErrandPublished(f.errandId); // tell other Runners it's open again
+  }
+}
+
+export async function onDispute(f: Fulfilment & { raisedRole: 'customer' | 'runner' }) {
+  const other = f.raisedRole === 'customer' ? f.runnerId : f.customerId;
+  if (other) await send([other], f.marketId, 'errand_disputed', { title: f.title, errandId: f.errandId, url: await errandUrl(f) });
+}
+
+export async function onDisputeResolved(f: Fulfilment & { outcome: string }) {
+  await send([f.customerId, ...(f.runnerId ? [f.runnerId] : [])], f.marketId, 'dispute_resolved', { title: f.title, errandId: f.errandId, outcome: f.outcome, url: await errandUrl(f) });
+}
+
+export async function onRated(f: Fulfilment & { rateeId: string }) {
+  await send([f.rateeId], f.marketId, 'rating_received', { title: f.title, errandId: f.errandId, url: await errandUrl(f) });
+}
+
 /** Cron (Inngest every 5 min; Vercel Cron backstop). */
 export async function sweep(now = new Date()) {
-  const expired = await expireDueErrands(defaultDb(), now);
+  const db = defaultDb();
+  const expired = await expireDueErrands(db, now);
   for (const e of expired) {
     const m = await getMarketById(e.marketId);
     await send([e.customerId], e.marketId, 'errand_expired', { title: e.title, errandId: e.id, url: path(m?.slug, `/errands/${e.id}`) });
   }
-  return { expired: expired.length };
+  const released = await autoReleaseDue(db, now);
+  for (const f of released) {
+    await send([f.customerId, ...(f.runnerId ? [f.runnerId] : [])], f.marketId, 'errand_auto_confirmed', { title: f.title, errandId: f.errandId, url: await errandUrl(f) });
+  }
+  const reminders = await confirmRemindersDue(db, now);
+  for (const f of reminders) {
+    const m = await getMarketById(f.marketId);
+    const when = f.autoReleaseAt && m ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short', timeZone: m.timezone }).format(f.autoReleaseAt) : '';
+    await send([f.customerId], f.marketId, 'confirm_reminder', { title: f.title, errandId: f.errandId, when, url: await errandUrl(f) });
+  }
+  return { expired: expired.length, autoConfirmed: released.length, reminders: reminders.length };
 }
 
 registerInline('notifications/deliver', ({ deliveryId }) => deliverNotification(deliveryId));

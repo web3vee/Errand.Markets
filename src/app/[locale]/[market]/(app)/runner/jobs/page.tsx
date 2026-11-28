@@ -4,6 +4,7 @@ import { listRunnerJobs } from '@/modules/errands/service';
 import { defaultDb } from '@/server/context';
 import { money } from '@/server/format';
 import { requireVerifiedRunner } from '@/server/runner-guard';
+import { Notice } from '@/ui/forms/fields';
 import { Badge } from '@/ui/primitives/badge';
 import { Container } from '@/ui/primitives/container';
 
@@ -12,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return { title: t('runnerMarket.jobsTitle') };
 }
 
-export default async function MyJobs({ params }: { params: Promise<{ locale: string; market: string }> }) {
+export default async function MyJobs({ params, searchParams }: { params: Promise<{ locale: string; market: string }>; searchParams: Promise<{ withdrawn?: string }> }) {
   const { locale, market: slug } = await params;
   setRequestLocale(locale);
   const { session, market } = await requireVerifiedRunner(locale, slug, `/${locale}/${slug}/runner/jobs`);
@@ -21,6 +22,7 @@ export default async function MyJobs({ params }: { params: Promise<{ locale: str
   return (
     <Container className="max-w-[48rem] py-12">
       <h1 className="text-h1">{t('runnerMarket.jobsTitle')}</h1>
+      {(await searchParams).withdrawn ? <div className="mt-4"><Notice tone="success">{t('fulfil.withdrawn')}</Notice></div> : null}
       {rows.length === 0 ? <p className="mt-8 text-body text-ink-2">{t('runnerMarket.jobsEmpty')}</p> : (
         <ul className="mt-8 border-b border-line">
           {rows.map((r) => (

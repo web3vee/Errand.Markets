@@ -9,6 +9,7 @@ export const MARKETS = {
 const DB = process.env.E2E_DATABASE_URL ?? 'postgres://errand:errand@localhost:5432/errand_dev';
 
 export async function signIn(page: Page, market: 'ng' | 'vc', phone: string, name?: string) {
+  clearRateLimits(); // every e2e sign-in comes from one IP; the suite needs more than the 20/hour limit
   await page.goto(`/en/${market}/sign-in`);
   await page.getByLabel('Mobile number').fill(phone);
   await page.getByRole('button', { name: 'Send code' }).click();
@@ -23,6 +24,12 @@ export async function signIn(page: Page, market: 'ng' | 'vc', phone: string, nam
     // Wait for the save to finish before navigating away (otherwise the action can be cancelled).
     await expect(page).not.toHaveURL(/onboarding/);
   }
+}
+
+/** Test shortcut: reset OTP rate-limit counters in the LOCAL db (same as global-setup, per sign-in). */
+export function clearRateLimits() {
+  if (!/@(localhost|127\.0\.0\.1)[:/]/.test(DB)) throw new Error('only on a local database');
+  execFileSync('psql', [DB, '-qc', 'delete from rate_limits']);
 }
 
 export function grantAdmin(e164: string, market: string) {

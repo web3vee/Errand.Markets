@@ -482,7 +482,51 @@
       "title": "Please verify again",
       "body": "We need you to redo your identity check."
     },
-    "sms": "Errand.markets: {title}. {body}"
+    "sms": "Errand.markets: {title}. {body}",
+    "errand_paid": {
+      "title": "Paid — you can start",
+      "body": "The customer paid for “{title}”. The exact address and contact are now on the errand."
+    },
+    "errand_started": {
+      "title": "Your Runner is on it",
+      "body": "{runner} started “{title}”."
+    },
+    "errand_completed": {
+      "title": "Errand done — please confirm",
+      "body": "{runner} finished “{title}”. Check the photos and confirm."
+    },
+    "confirm_reminder": {
+      "title": "Please confirm your errand",
+      "body": "“{title}” is marked done. It confirms automatically at {when} unless you report a problem."
+    },
+    "errand_confirmed": {
+      "title": "Errand confirmed",
+      "body": "The customer confirmed “{title}”. Thank you!"
+    },
+    "errand_auto_confirmed": {
+      "title": "Errand confirmed",
+      "body": "“{title}” was confirmed automatically."
+    },
+    "errand_cancelled": {
+      "title": "Errand cancelled",
+      "body": "The customer cancelled “{title}”."
+    },
+    "runner_withdrew": {
+      "title": "Your Runner backed out",
+      "body": "The Runner can't do “{title}”. It's open to other Runners again."
+    },
+    "errand_disputed": {
+      "title": "A problem was reported",
+      "body": "A problem was reported on “{title}”. Our team will look at it and contact you."
+    },
+    "dispute_resolved": {
+      "title": "Problem resolved",
+      "body": "Our team has made a decision on “{title}”. Open the errand to see it."
+    },
+    "rating_received": {
+      "title": "You've been rated",
+      "body": "Rate “{title}” too, and you'll both see each other's rating."
+    }
   },
   "errandStatus": {
     "draft": "Draft",
@@ -608,7 +652,7 @@
     "noQuestions": "No questions yet.",
     "runner": "Your Runner",
     "chat": "Message",
-    "awaitingPayment": "{runner} accepted. Payment opens in the next release — your Runner will start once it's paid.",
+    "awaitingPayment": "{runner} accepted. Pay to get started — your Runner sees the exact address once it's paid.",
     "reviewPending": "Under review: this errand mentions something on our restricted list ({note}). An admin will check it shortly.",
     "reviewRejected": "This errand wasn't allowed.",
     "events": {
@@ -619,7 +663,17 @@
       "review_rejected": "Rejected by review",
       "price_changed": "Price changed",
       "runner_accepted": "Runner accepted",
-      "expired": "Expired"
+      "expired": "Expired",
+      "payment_confirmed": "Paid",
+      "started": "Started",
+      "completed": "Marked done",
+      "confirmed": "Confirmed",
+      "auto_released": "Confirmed automatically",
+      "confirm_reminder": "Reminder sent",
+      "cancelled": "Cancelled",
+      "runner_withdrew": "Runner backed out",
+      "dispute_raised": "Problem reported",
+      "dispute_resolved": "Problem resolved"
     },
     "contact": "Contact"
   },
@@ -739,5 +793,129 @@
     "whenPaid": "You pay this after a Runner accepts. Item money is held and settled against the receipt — any difference is refunded or topped up.",
     "youEarn": "You earn",
     "itemsReimbursed": "+ items reimbursed against the receipt ({amount})"
+  },
+  "fulfil": {
+    "sandboxPayTitle": "Pay (sandbox)",
+    "sandboxPayLead": "No real payment happens in the sandbox. This marks the errand as paid so you can test what comes next.",
+    "sandboxPay": "Mark as paid (sandbox)",
+    "payLater": "Card payment arrives in the next release.",
+    "cancel": "Cancel errand",
+    "cancelHelp": "Free until you've paid.",
+    "cancelConfirm": "Yes, cancel it",
+    "cancelled": "Errand cancelled.",
+    "withdraw": "I can't do this errand",
+    "withdrawHelp": "It goes back to other Runners. Free before payment.",
+    "withdrawn": "You've backed out. The errand is open to other Runners again.",
+    "runnerPaid": "Paid. You can see the exact address and contact above. Start when you're on your way.",
+    "start": "Start errand",
+    "inProgressRunner": "When you're done, add a photo as proof and mark it done.",
+    "inProgressCustomer": "{runner} is working on it.",
+    "paidCustomer": "Paid. {runner} will start soon.",
+    "completeTitle": "Mark as done",
+    "proof": "Proof photo",
+    "proofHelp": "A photo of the delivered item, the finished task or the drop-off point.",
+    "receipt": "Receipt photo",
+    "receiptHelp": "A clear photo of the receipt for the items you bought.",
+    "spent": "Amount spent on items",
+    "spentHelp": "From the receipt. Estimate was {amount}.",
+    "addPhoto": "Add photo",
+    "uploading": "Uploading…",
+    "removePhoto": "Remove photo",
+    "complete": "Mark as done",
+    "awaitingConfirmRunner": "Waiting for the customer to confirm. It confirms automatically at {time}.",
+    "awaitingConfirmCustomer": "{runner} marked this done. Check the photos, then confirm. It confirms automatically at {time} unless you report a problem.",
+    "confirm": "Confirm it's done",
+    "confirmedCustomer": "Confirmed. Thanks for using Errand.markets.",
+    "confirmedRunner": "Confirmed. Well done!",
+    "proofTitle": "Proof from your Runner",
+    "proofTitleRunner": "Your proof",
+    "receiptTitle": "Receipt",
+    "itemsSpent": "Spent on items: {actual} (estimate {estimate})",
+    "itemsDiffMore": "{amount} more than the estimate. The difference is settled at payment.",
+    "itemsDiffLess": "{amount} less than the estimate. The difference is refunded at payment.",
+    "disputeTitle": "Report a problem",
+    "disputeLead": "This pauses the errand and sends it to our team. Use it when something went wrong and you can't sort it out in chat.",
+    "disputeReason": "What went wrong?",
+    "disputeDetails": "Details",
+    "disputeSubmit": "Report problem",
+    "disputeOpen": "A problem was reported. Our team is looking at it and will contact you both.",
+    "disputeResolvedRelease": "Our team resolved the problem in the Runner's favour. The errand is confirmed.",
+    "disputeResolvedRefund": "Our team resolved the problem with a refund to the customer.",
+    "reasons": {
+      "not_done": "The errand wasn't done",
+      "wrong_items": "Wrong items",
+      "damaged": "Something was damaged",
+      "receipt_mismatch": "Receipt doesn't match",
+      "unreachable": "Couldn't reach the other person",
+      "wrong_location": "Wrong or unsafe location",
+      "safety": "Safety concern",
+      "other": "Something else"
+    },
+    "rateTitle": "Rate {name}",
+    "rateLead": "Ratings stay hidden until you've both rated, or until {time}.",
+    "stars": "{count, plural, one {# star} other {# stars}}",
+    "comment": "Comment",
+    "rateSubmit": "Send rating",
+    "yourRating": "Your rating",
+    "theirRating": "{name}'s rating of you",
+    "ratingHidden": "{name} rated you. Rate them to see it.",
+    "rated": "Thanks for rating.",
+    "rateClosed": "The rating window has closed.",
+    "ratingSummary": "★ {avg} ({count})",
+    "noRatings": "No ratings yet",
+    "errors": {
+      "wrong_status": "That isn't possible at this stage. Reload the page.",
+      "not_found": "Errand not found.",
+      "proof_required": "Add at least one proof photo.",
+      "receipt_required": "Add a photo of the receipt.",
+      "amount_required": "Enter how much you spent on items.",
+      "payments_unavailable": "Payment isn't available yet.",
+      "cancel_after_payment": "Paid errands can't be cancelled here yet. Report a problem instead.",
+      "invalid_reason": "Choose what went wrong.",
+      "invalid_stars": "Choose 1 to 5 stars.",
+      "already_rated": "You've already rated this errand.",
+      "rating_closed": "The rating window has closed.",
+      "upload_failed": "The photo didn't upload. Try again."
+    },
+    "panelLabel": "Next steps"
+  },
+  "adminDisputes": {
+    "nav": "Disputes",
+    "title": "Disputes",
+    "empty": "No disputes.",
+    "status": "Status",
+    "statuses": {
+      "open": "Open",
+      "resolved": "Resolved",
+      "all": "All"
+    },
+    "raisedBy": "Raised by {role}",
+    "roles": {
+      "customer": "customer",
+      "runner": "Runner"
+    },
+    "reason": "Reason",
+    "details": "Details",
+    "errand": "Errand",
+    "stageWhenRaised": "Stage when raised",
+    "outcome": "Decision",
+    "release": "Release to Runner (errand confirmed)",
+    "refund": "Refund the customer",
+    "moneyNote": "Payments arrive in Stage 6. Until then this records the decision and moves the errand on; no money moves.",
+    "note": "Note (internal)",
+    "submit": "Save decision",
+    "done": "Decision saved.",
+    "resolved": "Resolved {when}: {outcome}",
+    "outcomes": {
+      "release_runner": "released to Runner",
+      "refund_customer": "refunded to customer"
+    },
+    "openErrand": "Open errand",
+    "back": "Back to disputes",
+    "errors": {
+      "already_resolved": "This dispute was already resolved.",
+      "out_of_scope": "This dispute is outside your markets.",
+      "wrong_status": "The errand isn't in dispute any more."
+    }
   }
 }

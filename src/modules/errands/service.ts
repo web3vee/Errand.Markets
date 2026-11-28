@@ -87,7 +87,7 @@ export async function createErrand(db: Db, input: CreateErrandInput, now = new D
     await tx.insert(errandStops).values(input.stops.map((s, i) => ({ errandId, seq: i + 1, kind: s.kind, placeId: placeRows[i]!.id, instructions: s.instructions })));
     if (items.length) await tx.insert(errandItems).values(items.map((i) => ({ errandId, name: i.name, qty: i.qty, estUnitPriceMinor: i.estUnitPriceMinor })));
     await attachErrandMedia(tx, input.customerId, errandId, input.mediaIds);
-    await event(tx, errandId, null, 'draft', 'created', 'customer', input.customerId);
+    await recordEvent(tx, errandId, null, 'draft', 'created', 'customer', input.customerId);
 
     if (!input.publish) return { errandId, status: 'draft' as const, heldForReview: false };
     return publishInTx(tx, errandId, input.customerId, now);
@@ -118,14 +118,14 @@ async function publishInTx(tx: Tx, errandId: string, actorId: string, now: Date,
   // An admin clearance overrides "review" matches, never "block" ones.
   if (screen.action === 'review' && !opts.reviewCleared) {
     await tx.update(errands).set({ reviewState: 'pending_review', reviewNote: screen.matches.map((m) => m.label).join(', ') }).where(eq(errands.id, errandId));
-    await event(tx, errandId, 'draft', 'draft', 'held_for_review', 'system', null, { matches: screen.matches });
+    await recordEvent(tx, errandId, 'draft', 'draft', 'held_for_review', 'system', null, { matches: screen.matches });
     return { errandId, status: 'draft', heldForReview: true };
   }
   const { fees } = await marketplaceConfig(tx, e.marketId);
   const byExpiry = new Date(now.getTime() + fees.errandDefaultExpiryHours * 3_600_000);
   const expiresAt = e.windowEnd && e.windowEnd < byExpiry ? e.windowEnd : byExpiry;
   await tx.update(errands).set({ status: 'open', publishedAt: now, expiresAt, feeScheduleId: fees.id, version: sql`${errands.version} + 1` }).where(eq(errands.id, errandId));
-  await event(tx, errandId, 'draft', 'open', 'published', 'customer', actorId);
+  await recordEvent(tx, errandId, 'draft', 'open', 'published', 'customer', actorId);
   return { errandId, status: 'open', heldForReview: false };
 }
 
@@ -134,8 +134,8 @@ async function currencyOf(tx: Tx, marketId: string) {
   return r[0]!.currency_code;
 }
 
-async function event(tx: Tx, errandId: string, from: ErrandStatus | null, to: ErrandStatus, name: string,
-  actorType: 'customer' | 'runner' | 'admin' | 'system', actorId: string | null, data: Record<string, unknown> = {}) {
+export async function recordEvent(tx: Tx, errandId: string, from: ErrandStatus | null, to: ErrandStatus, name: string,
+  actorType: 'customer' | 'runner' | 'admin' | 'system' | 'provider', actorId: string | null, data: Record<string, unknown> = {}) {
   await tx.insert(errandEvents).values({ errandId, fromStatus: from, toStatus: to, event: name, actorType, actorId, data });
 }
 
@@ -150,7 +150,7 @@ export async function editPrice(db: Db, customerId: string, errandId: string, pr
     if (priceMinor <= 0n) throw new ErrandError('price_required');
     if (fees.minErrandPriceMinor !== null && priceMinor < fees.minErrandPriceMinor) throw new ErrandError('price_below_minimum', { min: fees.minErrandPriceMinor });
     await tx.update(errands).set({ priceMinor, version: e.version + 1 }).where(eq(errands.id, errandId));
-    await event(tx, errandId, e.status, e.status, 'price_changed', 'customer', customerId, { from: e.priceMinor.toString(), to: priceMinor.toString() });
+    await recordEvent(tx, errandId, e.status, e.status, 'price_changed', 'customer', customerId, { from: e.priceMinor.toString(), to: priceMinor.toString() });
     return { version: e.version + 1 };
   });
 }
@@ -179,7 +179,7 @@ export async function acceptErrand(db: Db, runnerId: string, errandId: string, e
     const offerId = uuidv7();
     await tx.insert(offers).values({ id: offerId, marketId: e.marketId, errandId, runnerId, kind: 'accept_price', amountMinor: e.priceMinor, currency: e.currency, status: 'accepted' });
     await tx.update(errands).set({ status: 'offer_accepted', runnerId, acceptedOfferId: offerId, acceptedAt: now, version: e.version + 1 }).where(eq(errands.id, errandId));
-    await event(tx, errandId, 'open', 'offer_accepted', 'runner_accepted', 'runner', runnerId, { price: e.priceMinor.toString() });
+    await recordEvent(tx, errandId, 'open', 'offer_accepted', 'runner_accepted', 'runner', runnerId, { price: e.priceMinor.toString() });
     // Threads with other Runners become read-only; make sure the chosen Runner has one.
     await tx.update(conversations).set({ status: 'read_only' }).where(and(eq(conversations.errandId, errandId), ne(conversations.runnerId, runnerId)));
     await tx.insert(conversations).values({ id: uuidv7(), marketId: e.marketId, errandId, customerId: e.customerId, runnerId }).onConflictDoNothing();
@@ -201,7 +201,7 @@ export async function expireDueErrands(db: Db, now = new Date()) {
       .where(and(eq(errands.status, 'open'), lte(errands.expiresAt, now)))
       .returning({ id: errands.id, customerId: errands.customerId, marketId: errands.marketId, title: errands.title });
     for (const d of due) {
-      await event(tx, d.id, 'open', 'expired', 'expired', 'system', null);
+      await recordEvent(tx, d.id, 'open', 'expired', 'expired', 'system', null);
       await tx.update(conversations).set({ status: 'read_only' }).where(eq(conversations.errandId, d.id));
     }
     return due;
@@ -216,10 +216,10 @@ export async function reviewHeldErrand(db: Db, input: { adminId: string; adminSc
     if (input.adminScope !== 'all' && !input.adminScope.includes(e.marketId)) throw new ErrandError('out_of_scope');
     if (input.decision === 'reject') {
       await tx.update(errands).set({ reviewState: 'rejected', reviewNote: input.note, status: 'cancelled', cancelledAt: now, cancelledBy: input.adminId, cancelReasonCode: 'prohibited' }).where(eq(errands.id, e.id));
-      await event(tx, e.id, 'draft', 'cancelled', 'review_rejected', 'admin', input.adminId, { note: input.note });
+      await recordEvent(tx, e.id, 'draft', 'cancelled', 'review_rejected', 'admin', input.adminId, { note: input.note });
     } else {
       await tx.update(errands).set({ reviewState: 'cleared' }).where(eq(errands.id, e.id));
-      await event(tx, e.id, 'draft', 'draft', 'review_cleared', 'admin', input.adminId, { note: input.note });
+      await recordEvent(tx, e.id, 'draft', 'draft', 'review_cleared', 'admin', input.adminId, { note: input.note });
       await publishInTx(tx, e.id, input.adminId, now, { reviewCleared: true });
     }
     await tx.execute(sql`insert into admin_audit_log (actor_id, market_id, action, subject_type, subject_id, data)

@@ -30,7 +30,7 @@ sequenceDiagram
 
 - **Pricing:** the customer's price (`pricing_mode = fixed`). The first eligible Runner wins (row lock + a unique "one accepted offer per errand" index). Counter-offers stay switched off via `runner_rules.pricing_control`.
 - **Fees (decided 2026-11-26):** 5% service fee on the errand price, paid by the customer, with **no minimum price**. Commission is `0`. Item cap is still NULL (not decided). Customers see a live breakdown (price + fee + items estimate = total) before posting, and Runners see "You earn".
-- **Payment order (decided):** the customer pays after a Runner accepts, including the item estimate. After acceptance an errand waits in `offer_accepted` until Stage 6 adds payment. The 30-minute funding timeout is **not active yet**: without payments it would bounce every accepted errand back to open.
+- **Payment order (decided):** the customer pays after a Runner accepts, including the item estimate. After acceptance an errand waits in `offer_accepted` until Stage 6 adds payment (in sandbox mode, Stage 5's test payment moves it on; see [12](./12-fulfilment.md)). The 30-minute funding timeout is **not active yet**: without payments it would bounce every accepted errand back to open.
 - **Prohibited items:** the screening engine is live and tested, but the per-market lists are empty until legal provides them. Admins clear or reject held errands at `/en/admin/errands`.
 
 ## Privacy and access

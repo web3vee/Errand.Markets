@@ -8,7 +8,7 @@ import { Button } from '@/ui/primitives/button';
 export function SubmitButton({ children, ...props }: ComponentProps<typeof Button>) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" aria-disabled={pending} disabled={pending || props.disabled} {...props}>
+    <Button type="submit" {...props} aria-disabled={pending} disabled={pending || props.disabled}>
       {children}
     </Button>
   );

@@ -10,13 +10,13 @@
 | 2026-11-26 | **Q1 items:** Runners buy items with their own money and are **reimbursed on delivery**. This replaces the brief's "Runners never front their own money". |
 | 2026-11-26 | **Q4b:** no minimum errand price — customers set any price per errand. **Q22:** customer pays **after a Runner accepts** (brief's order). **Q4a:** **5% service fee**, paid by the customer, applied to the errand price (not to item costs — confirm if items should also carry it). **Q1a:** customer pays the **estimated item cost upfront** (held, settled against the receipt). Applied as fee-schedule version 2 (migration 0005); errands keep the version they were posted under. |
 | 2026-11-26 | **Stage 4 built with:** min price / item cap **unset** (nothing enforced until decided); brief's payment order kept (accept → pay, Q22 still open); prohibited-items list **empty** until legal input; accepted defaults: expiry 48h, max 3 active errands per Runner, Q10 questions before acceptance, Q14 hold for review. |
+| 2026-11-28 | **Stage 5 built with recommended defaults:** **Q1c** Runners front item money (receipt + amount spent recorded; settlement in Stage 6). **Q11** ratings two-way, blind, 7-day window. Disputes resolved by `ops` admins (release or refund; splits need Stage 6). Until payments exist, a sandbox-only "Mark as paid" step reaches `funded`. See 12. |
 
 ## Still open (blocking the stage shown)
 
 | # | Question | Recommended default | Blocks |
 |---|---|---|---|
 | Q1b | St. Vincent payouts are admin-approved bank batches, so a Runner could wait **several days** to be repaid for items. Acceptable? Or weekly vs twice-weekly batches? | Accept; twice-weekly batches. | Stage 6 |
-| Q1c | Who fronts the money: the **Runners**, or Errand.markets itself? | Runners (that's how the docs are written now). | Stage 5 |
 | Q1d | Limit on item cost per errand (protects Runners and limits fraud)? | Per-market cap, set by admin. | Stage 4 |
 | Q23 | **Business contact email** shown on the homepage. | Please provide the address. | Homepage |
 

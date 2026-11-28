@@ -18,6 +18,18 @@ export const NOTIFICATION_TYPES = {
   kyc_approved: { push: true, sms: true },
   kyc_rejected: { push: true, sms: true },
   kyc_resubmission: { push: true, sms: true },
+  // Stage 5: fulfilment
+  errand_paid: { push: true, sms: true },
+  errand_started: { push: true, sms: false },
+  errand_completed: { push: true, sms: true },
+  confirm_reminder: { push: true, sms: true },
+  errand_confirmed: { push: true, sms: true },
+  errand_auto_confirmed: { push: true, sms: false },
+  errand_cancelled: { push: true, sms: true },
+  runner_withdrew: { push: true, sms: true },
+  errand_disputed: { push: true, sms: true },
+  dispute_resolved: { push: true, sms: true },
+  rating_received: { push: true, sms: false },
 } as const;
 export type NotificationType = keyof typeof NOTIFICATION_TYPES;
 

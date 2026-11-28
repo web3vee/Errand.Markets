@@ -20,7 +20,7 @@ export async function downscale(file: File, maxEdge = 1600): Promise<Blob> {
   }
 }
 
-export async function uploadImage(file: File, kind: 'errand_reference' | 'message_photo'): Promise<{ id: string } | { error: string }> {
+export async function uploadImage(file: File, kind: 'errand_reference' | 'message_photo' | 'proof' | 'receipt'): Promise<{ id: string } | { error: string }> {
   const body = new FormData();
   body.set('file', await downscale(file), 'photo.jpg');
   body.set('kind', kind);

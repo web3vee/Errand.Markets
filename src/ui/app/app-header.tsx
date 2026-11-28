@@ -23,7 +23,7 @@ export async function AppHeader({ locale, marketSlug, marketName, account, sandb
     { href: `${base}/messages`, label: t('nav.messages') },
     { href: `${base}/notifications`, label: t('nav.notifications'), aria: unread ? t('nav.notificationsCount', { count: unread }) : undefined, badge },
     { href: `${base}/account`, label: t('nav.account') },
-    ...(isAdmin ? [{ href: `/${locale}/admin/runners`, label: t('nav.admin') }, { href: `/${locale}/admin/errands`, label: t('adminErrands.nav') }] : []),
+    ...(isAdmin ? [{ href: `/${locale}/admin/runners`, label: t('nav.admin') }, { href: `/${locale}/admin/errands`, label: t('adminErrands.nav') }, { href: `/${locale}/admin/disputes`, label: t('adminDisputes.nav') }] : []),
   ] : [];
   return (
     <header className="border-b border-line">

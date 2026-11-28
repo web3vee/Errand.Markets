@@ -43,6 +43,20 @@
       "when": 1795705912279,
       "tag": "0005_service_fee_5pct",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795886644834,
+      "tag": "0006_fulfilment",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795886668242,
+      "tag": "0007_fulfilment_security",
+      "breakpoints": true
     }
   ]
 }

@@ -13,7 +13,10 @@ import { Notice } from '@/ui/forms/fields';
 import { Badge } from '@/ui/primitives/badge';
 import { Button } from '@/ui/primitives/button';
 import { Container } from '@/ui/primitives/container';
+import { fulfilmentMedia, hasRated, latestDispute, ratingsForErrand, ratingSummary } from '@/modules/errands/fulfilment';
+import { providerMode } from '@/providers/registry';
 import { editPriceAction, publishDraftAction } from './actions';
+import { FulfilmentPanel, ProofSection } from './fulfilment-panel';
 import { PriceForm } from './price-form';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -23,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function ErrandDetail({ params, searchParams }: {
   params: Promise<{ locale: string; market: string; id: string }>;
-  searchParams: Promise<{ posted?: string; held?: string; draft?: string; price?: string; error?: string }>;
+  searchParams: Promise<{ posted?: string; held?: string; draft?: string; price?: string; error?: string; f?: string; ferr?: string }>;
 }) {
   const { locale, market: slug, id } = await params;
   setRequestLocale(locale);
@@ -48,6 +51,20 @@ export default async function ErrandDetail({ params, searchParams }: {
   const row = 'border-t border-line py-4';
   // The fee schedule frozen at publication (or the current one for drafts).
   const fees = await feeScheduleFor(db, market.id, e.feeScheduleId);
+  // Stage 5: fulfilment state for the panel.
+  const role = isCustomer ? 'customer' as const : isRunner ? 'runner' as const : null;
+  const otherId = isCustomer ? e.runnerId : e.customerId;
+  const sandbox = providerMode(market.code) === 'sandbox' && process.env.VERCEL_ENV !== 'production';
+  const [proofPhotos, dispute, visibleRatings, otherRated, reputation] = await Promise.all([
+    fulfilmentMedia(db, session.claims, id),
+    latestDispute(db, session.claims, id),
+    ratingsForErrand(db, session.claims, id),
+    otherId ? hasRated(db, id, otherId) : Promise.resolve(false),
+    ratingSummary(db, e.runnerId ? [e.runnerId] : []),
+  ]);
+  const myRating = visibleRatings.find((r) => r.raterId === account.id) ?? null;
+  const theirRating = visibleRatings.find((r) => r.raterId === otherId) ?? null;
+  const runnerRep = e.runnerId ? reputation.get(e.runnerId) : undefined;
 
   return (
     <Container className="max-w-[48rem] py-12">
@@ -66,8 +83,15 @@ export default async function ErrandDetail({ params, searchParams }: {
         {e.reviewState === 'rejected' ? <Notice tone="danger">{t('errands.reviewRejected')}</Notice> : null}
         {sp.price ? <Notice tone="success">{t('errands.priceSaved')}</Notice> : null}
         {sp.error ? <Notice tone="danger">{t.has(`post.errors.${sp.error}`) ? t(`post.errors.${sp.error}` as never, { amount: '', labels: '' } as never) : t('common.error')}</Notice> : null}
-        {e.status === 'offer_accepted' ? <Notice>{isRunner ? t('runnerMarket.waitingPayment') : t('errands.awaitingPayment', { runner: names.get(e.runnerId!) ?? '' })}</Notice> : null}
+        {sp.f === 'cancelled' ? <Notice tone="success">{t('fulfil.cancelled')}</Notice> : null}
+        {sp.f === 'rated' ? <Notice tone="success">{t('fulfil.rated')}</Notice> : null}
+        {sp.ferr ? <Notice tone="danger">{t.has(`fulfil.errors.${sp.ferr}`) ? t(`fulfil.errors.${sp.ferr}` as never) : t('common.error')}</Notice> : null}
       </div>
+
+      {role ? (
+        <FulfilmentPanel e={e} role={role} locale={locale} slug={slug} market={market} sandbox={sandbox} otherName={otherId ? names.get(otherId) ?? '' : ''}
+          dispute={dispute} myRating={myRating} theirRating={theirRating} theirRatingHidden={otherRated && !theirRating} now={new Date()} />
+      ) : null}
 
       <dl className="mt-8 border-b border-line">
         <div className={row}>
@@ -125,6 +149,8 @@ export default async function ErrandDetail({ params, searchParams }: {
         ) : null}
       </dl>
 
+      {role ? <ProofSection role={role} photos={proofPhotos} e={e} market={market} /> : null}
+
       {isCustomer ? (
         <div className="mt-6">
           <PriceSummary testId="errand-summary" errandFeeMinor={e.priceMinor} itemEstimateMinor={e.itemEstimateMinor} fees={fees} rounding={market.roundingMode}
@@ -142,6 +168,7 @@ export default async function ErrandDetail({ params, searchParams }: {
           <h2 id="runner-h" className="text-h3">{isRunner ? t('nav.messages') : t('errands.runner')}</h2>
           <p className="mt-2 flex flex-wrap items-center gap-3">
             <span>{isRunner ? names.get(e.customerId) : names.get(e.runnerId!)}</span>
+            {!isRunner ? <span className="text-small text-ink-3" data-testid="runner-rating">{runnerRep ? t('fulfil.ratingSummary', { avg: format.number(runnerRep.avg, { minimumFractionDigits: 1, maximumFractionDigits: 1 }), count: runnerRep.count }) : t('fulfil.noRatings')}</span> : null}
             <Button asChild variant="secondary"><Link href={`/${locale}/${slug}/messages/${myThread.id}`}>{t('errands.chat')}</Link></Button>
           </p>
         </section>
