@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { char, index, jsonb, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { char, check, index, jsonb, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 import { appRole, availability, kycVerificationStatus, roleStatus, runnerKycStatus, userStatus, vehicleType } from './enums';
 import { markets, serviceAreas } from './markets';
 
@@ -9,7 +9,12 @@ export const users = pgTable(
   {
     id: uuid('id').primaryKey(),
     marketId: uuid('market_id').notNull().references(() => markets.id),
-    phoneE164: text('phone_e164').notNull().unique(),
+    /**
+     * Verified mobile number (set only after an OTP check). NULL for accounts that signed in with
+     * Google and haven't added one yet: they can browse, but posting errands and becoming a
+     * Runner require it (enforced by DB triggers, migration 0008).
+     */
+    phoneE164: text('phone_e164').unique(),
     displayName: text('display_name'),
     email: text('email'),
     locale: text('locale').notNull().default('en'),
@@ -17,7 +22,7 @@ export const users = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index('users_market').on(t.marketId)],
+  (t) => [index('users_market').on(t.marketId), check('users_phone_or_email', sql`${t.phoneE164} is not null or ${t.email} is not null`)],
 );
 
 export const userRoles = pgTable(

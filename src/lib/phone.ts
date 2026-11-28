@@ -33,7 +33,8 @@ export function phoneCountry(e164: string): string | null {
 }
 
 /** For display in admin lists: keep the country code and last 4 digits. */
-export function maskPhone(e164: string): string {
+export function maskPhone(e164: string | null): string {
+  if (!e164) return '—';
   if (e164.length < 8) return e164;
   return `${e164.slice(0, -7)}•••${e164.slice(-4)}`;
 }

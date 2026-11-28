@@ -227,7 +227,20 @@
       "invalid_code": "That code isn't right. Check it and try again.",
       "expired": "That code has expired. Request a new one.",
       "too_many_attempts": "Too many wrong codes. Request a new one.",
-      "session_expired": "Your sign-in session expired. Enter your number again."
+      "session_expired": "Your sign-in session expired. Enter your number again.",
+      "phone_taken": "That number already has an account. Sign out and sign in with that number instead."
+    },
+    "or": "or use your mobile number",
+    "google": {
+      "continue": "Continue with Google",
+      "note": "Look around straight away. We'll ask for your mobile number before you post an errand or start as a Runner.",
+      "failed": "Google sign-in didn't finish. Try again, or use your mobile number.",
+      "sandboxTitle": "Sandbox Google sign-in",
+      "sandboxLead": "No Google account is used here. Enter any email to sign in as if Google had confirmed it.",
+      "sandboxEmail": "Email",
+      "sandboxName": "Name (optional)",
+      "sandboxSubmit": "Continue",
+      "sandboxInvalidEmail": "Enter a valid email address."
     }
   },
   "onboarding": {
@@ -261,7 +274,11 @@
     "postSoon": "Need something done?",
     "suspendedTitle": "Account unavailable",
     "suspendedBody": "Your account isn't active. Contact support for help.",
-    "postCta": "Post an errand"
+    "postCta": "Post an errand",
+    "email": "Email",
+    "phoneMissing": "Not added yet",
+    "addPhone": "Add mobile number",
+    "runnerNeedsPhone": "Runners need a verified mobile number so customers can reach them."
   },
   "runnerOnboarding": {
     "profileTitle": "Your Runner profile",
@@ -714,5 +731,9 @@
     "whenPaid": "You pay this after a Runner accepts. Item money is held and settled against the receipt — any difference is refunded or topped up.",
     "youEarn": "You earn",
     "itemsReimbursed": "+ items reimbursed against the receipt ({amount})"
+  },
+  "phoneLink": {
+    "title": "Add your mobile number",
+    "lead": "You need a verified {market} mobile number to post errands or work as a Runner, so the other person can reach you. We'll text you a 6-digit code."
   }
 }

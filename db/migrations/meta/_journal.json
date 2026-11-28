@@ -57,6 +57,13 @@
       "when": 1795868709055,
       "tag": "0007_drop_market_text_keys",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795886736584,
+      "tag": "0008_google_sign_in",
+      "breakpoints": true
     }
   ]
 }

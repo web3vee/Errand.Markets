@@ -65,7 +65,7 @@ export async function requireAccount(locale: string, marketSlug: string, path: s
   let account = await currentAccount();
   if (!account) {
     const market = await requireMarket(marketSlug);
-    await ensureUser(defaultDb(), { authUserId: session.userId, phoneE164: session.phoneE164, marketId: market.id, locale });
+    await ensureUser(defaultDb(), { authUserId: session.userId, phoneE164: session.phoneE164, email: session.email, displayName: session.name, marketId: market.id, locale });
     account = await getAccount(defaultDb(), session.claims);
     if (!account) redirect(`/${locale}/${marketSlug}/sign-in`);
   }
@@ -75,6 +75,16 @@ export async function requireAccount(locale: string, marketSlug: string, path: s
   if (!account.displayName && !opts.allowNoName) redirect(`/${locale}/${marketSlug}/onboarding?next=${encodeURIComponent(path)}`);
   const market = await requireMarket(marketSlug);
   return { session, account, market };
+}
+
+/**
+ * For actions that need a reachable user (posting an errand, becoming or working as a Runner):
+ * a Google account without a verified phone is sent to add one first, then back to `path`.
+ */
+export async function requireVerifiedPhone(locale: string, marketSlug: string, path: string) {
+  const ctx = await requireAccount(locale, marketSlug, path);
+  if (!ctx.account.phoneE164) redirect(`/${locale}/${marketSlug}/account/phone?next=${encodeURIComponent(path)}`);
+  return { ...ctx, account: { ...ctx.account, phoneE164: ctx.account.phoneE164 } };
 }
 
 /** Admin pages: 404 for anyone without the permission (don't reveal the admin area exists). */

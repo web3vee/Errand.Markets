@@ -16,7 +16,9 @@ pnpm db:local:reset               # LOCAL ONLY: Supabase shim + migrations + see
 pnpm dev                          # http://localhost:3000
 ```
 
-In local/sandbox mode no SMS is sent. The code screen shows the code, and identity checks use a sandbox page. Everything is labelled "Sandbox".
+In local/sandbox mode no SMS is sent. The code screen shows the code, and identity checks use a sandbox page. "Continue with Google" opens a sandbox page that signs in with any email. Everything is labelled "Sandbox".
+
+Sign-in is by mobile number or Google. Google accounts can look around straight away but must add a verified mobile number before posting an errand or becoming a Runner.
 
 Make yourself an admin (after signing in once):
 
@@ -30,7 +32,7 @@ pnpm admin:grant --phone +2348031234567 --market NG --perms ops   # or --market 
 pnpm test               # unit (money, tax-ready pricing helpers, OTP, RBAC, KYC rules, provider signatures)
 pnpm test:integration   # against local Postgres: RLS, privileges, triggers, KYC flow — every market, plus a test-only third market (XW)
 pnpm build && pnpm start -p 3100 &
-E2E_BASE_URL=http://localhost:3100 pnpm test:e2e   # browser: sign-in → Runner → KYC → admin approval, both markets
+E2E_BASE_URL=http://localhost:3100 pnpm test:e2e   # browser: sign-in (phone + Google) → Runner → KYC → admin approval, both markets
 pnpm lint               # includes architecture boundary rules
 ```
 

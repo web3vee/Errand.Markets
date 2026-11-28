@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { kycVerifications } from '../../../../../../../../db/schema';
 import { providerMode } from '@/providers/registry';
-import { defaultDb, requireAccount } from '@/server/context';
+import { defaultDb, requireVerifiedPhone } from '@/server/context';
 import { Notice } from '@/ui/forms/fields';
 import { Container } from '@/ui/primitives/container';
 import { completeSandboxKyc } from '../../actions';
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function SandboxKyc({ params, searchParams }: { params: Promise<{ locale: string; market: string }>; searchParams: Promise<{ v?: string }> }) {
   const { locale, market: slug } = await params;
   setRequestLocale(locale);
-  const { account, market } = await requireAccount(locale, slug, `/${locale}/${slug}/runner/verify`);
+  const { account, market } = await requireVerifiedPhone(locale, slug, `/${locale}/${slug}/runner/verify`);
   if (providerMode(market.code) !== 'sandbox') notFound();
   const v = (await searchParams).v ?? '';
   const [row] = /^[0-9a-f-]{36}$/.test(v)

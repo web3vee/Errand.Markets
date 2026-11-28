@@ -28,6 +28,7 @@ export async function deliverNotification(deliveryId: string) {
   const deps = providerDeps(market, u.locale);
   try {
     if (d.channel === 'sms') {
+      if (!u.phone) return finish('skipped', { error: 'no_phone' }); // Google account without a phone yet
       const r = await smsFor(market, deps).send(providerContext(market, u.locale), { toE164: u.phone, body: text.sms, purpose: 'transactional' });
       return finish('sent', { providerRef: r.providerRef });
     }

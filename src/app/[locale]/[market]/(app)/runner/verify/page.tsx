@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { hasActiveRole } from '@/modules/identity/domain/policy';
-import { requireAccount } from '@/server/context';
+import { requireVerifiedPhone } from '@/server/context';
 import { Notice } from '@/ui/forms/fields';
 import { Badge } from '@/ui/primitives/badge';
 import { Button } from '@/ui/primitives/button';
@@ -20,7 +20,7 @@ export default async function RunnerVerify({ params }: { params: Promise<{ local
   const { locale, market: slug } = await params;
   setRequestLocale(locale);
   const path = `/${locale}/${slug}/runner/verify`;
-  const { account, market } = await requireAccount(locale, slug, path);
+  const { account, market } = await requireVerifiedPhone(locale, slug, path);
   if (!hasActiveRole(account.roles, 'runner') || !account.runner) redirect(`/${locale}/${slug}/account`);
   if (account.runner.serviceAreaIds.length === 0) redirect(`/${locale}/${slug}/runner/profile`);
   const t = await getTranslations();

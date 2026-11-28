@@ -9,6 +9,7 @@ Lead times matter: payment and KYC onboarding and SMS sender-ID registration can
 | **Vercel** (Pro, team) | Hosting, preview deploys | — (set env in Vercel) | Functions region `lhr1`. |
 | **Supabase** (Pro) | DB, Auth, Storage, Realtime | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL_EU_WEST_2`, `SUPABASE_AUTH_SMS_HOOK_SECRET` | Project in **eu-west-2**. Enable PostGIS. Enable phone auth + Send SMS hook (if Option A, see 01 §3). PITR backups recommended for a ledger. |
 | **Inngest** | Background jobs | `INNGEST_EVENT_KEY`, `INNGEST_SIGNING_KEY` | Vercel integration. |
+| **Google Cloud – OAuth client (Sign in with Google)** | "Continue with Google" via Supabase Auth | Client ID + secret go into Supabase (Auth → Providers → Google), not our env. `AUTH_GOOGLE_ENABLED=1` shows the button. | OAuth consent screen (app name, logo, privacy policy URL) must be published for public use. Authorised redirect URI = Supabase's callback URL. |
 | **Google Cloud – Maps Platform** | Maps JS, Places (New) autocomplete, Geocoding | `NEXT_PUBLIC_GOOGLE_MAPS_BROWSER_KEY`, `GOOGLE_MAPS_SERVER_KEY` | Two keys: browser key restricted by HTTP referrer + APIs; server key restricted by API. Set budget alerts. |
 | **Domain / DNS** | errand.markets | `NEXT_PUBLIC_APP_URL` | Needed for webhook URLs and PWA scope. |
 | Web Push (VAPID) | Push notifications | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | No account; I'll generate. |

@@ -17,6 +17,9 @@ create table if not exists auth.users (
   created_at timestamptz not null default now(),
   last_sign_in_at timestamptz
 );
+-- Google sign-in (sandbox stand-in in local mode): Supabase keeps these on auth.users too.
+alter table auth.users add column if not exists email text unique;
+alter table auth.users add column if not exists raw_user_meta_data jsonb not null default '{}'::jsonb;
 
 -- Same semantics as Supabase: read the verified JWT claims the server sets per transaction.
 create or replace function auth.jwt() returns jsonb language sql stable as $$

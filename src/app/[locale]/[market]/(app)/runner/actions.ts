@@ -12,12 +12,13 @@ import { KycError, startVerification } from '@/modules/kyc/service';
 import { SANDBOX_SIGNATURE_HEADER, SandboxKycPayload, signSandboxPayload } from '@/providers/kyc/sandbox';
 import { providerMode } from '@/providers/registry';
 import type { KycLaunch } from '@/providers/types';
-import { defaultDb, providersFor, requireAccount } from '@/server/context';
+import { defaultDb, providersFor, requireVerifiedPhone } from '@/server/context';
 import { handleKycWebhook } from '@/server/webhooks';
 import type { FormState } from '../sign-in/actions';
 
 export async function becomeRunnerAction(locale: string, marketSlug: string) {
-  const { account } = await requireAccount(locale, marketSlug, `/${locale}/${marketSlug}/account`);
+  // Runners must be reachable: a Google account adds its phone first, then comes back here.
+  const { account } = await requireVerifiedPhone(locale, marketSlug, `/${locale}/${marketSlug}/account`);
   await becomeRunner(defaultDb(), account.id);
   redirect(`/${locale}/${marketSlug}/runner/profile`);
 }
@@ -31,7 +32,7 @@ const ProfileInput = z.object({
 });
 
 export async function saveRunnerProfile(locale: string, marketSlug: string, _prev: FormState, form: FormData): Promise<FormState> {
-  const { session, market } = await requireAccount(locale, marketSlug, `/${locale}/${marketSlug}/runner/profile`);
+  const { session, market } = await requireVerifiedPhone(locale, marketSlug, `/${locale}/${marketSlug}/runner/profile`);
   const t = await getTranslations({ locale });
   const parsed = ProfileInput.safeParse({
     bio: form.get('bio') ?? undefined, vehicle: form.get('vehicle'), areas: form.getAll('areas'),
@@ -61,7 +62,7 @@ export async function saveRunnerProfile(locale: string, marketSlug: string, _pre
 export type KycStartState = { error?: string; launch?: KycLaunch } | null;
 
 export async function startKycAction(locale: string, marketSlug: string, _prev: KycStartState): Promise<KycStartState> {
-  const { account, market } = await requireAccount(locale, marketSlug, `/${locale}/${marketSlug}/runner/verify`);
+  const { account, market } = await requireVerifiedPhone(locale, marketSlug, `/${locale}/${marketSlug}/runner/verify`);
   const t = await getTranslations({ locale });
   let launch: KycLaunch;
   try {
@@ -80,7 +81,7 @@ export async function startKycAction(locale: string, marketSlug: string, _prev: 
 
 /** SANDBOX ONLY: simulate the provider's result by sending a signed webhook through the real pipeline. */
 export async function completeSandboxKyc(locale: string, marketSlug: string, _prev: FormState, form: FormData): Promise<FormState> {
-  const { account, market } = await requireAccount(locale, marketSlug, `/${locale}/${marketSlug}/runner/verify`);
+  const { account, market } = await requireVerifiedPhone(locale, marketSlug, `/${locale}/${marketSlug}/runner/verify`);
   const t = await getTranslations({ locale });
   if (providerMode(market.code) !== 'sandbox' || process.env.VERCEL_ENV === 'production') return { error: t('common.error') };
   const verificationId = String(form.get('verificationId') ?? '');

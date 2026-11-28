@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { areasWithBoundaries, feeScheduleFor, marketplaceConfig } from '@/modules/errands/service';
 import { serializeFees } from '@/ui/pricing/price-summary';
 import { currencySymbol } from '@/lib/money';
-import { defaultDb, requireAccount } from '@/server/context';
+import { defaultDb, requireVerifiedPhone } from '@/server/context';
 import { money, tzLabel } from '@/server/format';
 import { Notice } from '@/ui/forms/fields';
 import { Container } from '@/ui/primitives/container';
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function NewErrand({ params, searchParams }: { params: Promise<{ locale: string; market: string }>; searchParams: Promise<{ category?: string }> }) {
   const { locale, market: slug } = await params;
   setRequestLocale(locale);
-  const { market } = await requireAccount(locale, slug, `/${locale}/${slug}/errands/new`);
+  const { market } = await requireVerifiedPhone(locale, slug, `/${locale}/${slug}/errands/new`);
   const t = await getTranslations();
   const db = defaultDb();
   const { fees } = await marketplaceConfig(db, market.id);

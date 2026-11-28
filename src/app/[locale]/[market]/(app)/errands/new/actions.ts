@@ -9,7 +9,7 @@ import { zonedLocalToUtc } from '@/lib/time';
 import { parseAmountToMinor } from '@/modules/errands/domain/amount';
 import { createErrand, ErrandError, type StopInput } from '@/modules/errands/service';
 import { hitRateLimit } from '@/modules/platform/rate-limit';
-import { defaultDb, requireAccount } from '@/server/context';
+import { defaultDb, requireVerifiedPhone } from '@/server/context';
 import { onErrandPublished } from '@/server/workflows';
 
 export type PostState = { error?: string; field?: string } | null;
@@ -37,7 +37,7 @@ const Payload = z.object({
 });
 
 export async function postErrandAction(locale: string, marketSlug: string, _prev: PostState, form: FormData): Promise<PostState> {
-  const { account, market } = await requireAccount(locale, marketSlug, `/${locale}/${marketSlug}/errands/new`);
+  const { account, market } = await requireVerifiedPhone(locale, marketSlug, `/${locale}/${marketSlug}/errands/new`);
   const t = await getTranslations({ locale });
   const fmt = (m: bigint) => formatMoney(m, market.currency, market.formatLocale);
   let raw: unknown;

@@ -149,7 +149,7 @@ export async function decideVerification(db: Db, input: {
 }
 
 export type ReviewRow = {
-  verificationId: string; userId: string; marketId: string; displayName: string | null; phoneE164: string; provider: string;
+  verificationId: string; userId: string; marketId: string; displayName: string | null; phoneE164: string | null; provider: string;
   status: string; runnerStatus: string; submittedAt: Date | null; summary: unknown; reviewReasonCode: string | null; reviewNote: string | null; reviewedAt: Date | null;
 };
 

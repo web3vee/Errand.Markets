@@ -5,14 +5,14 @@ import { getTranslations } from 'next-intl/server';
 import { acceptErrand, ErrandError, marketplaceConfig } from '@/modules/errands/service';
 import { MessagingError, startQuestionThread } from '@/modules/messaging/service';
 import { hitRateLimit } from '@/modules/platform/rate-limit';
-import { defaultDb, requireAccount } from '@/server/context';
+import { defaultDb, requireVerifiedPhone } from '@/server/context';
 import { money } from '@/server/format';
 import { onAccepted } from '@/server/workflows';
 
 export type AcceptState = { error?: string } | null;
 
 export async function acceptAction(locale: string, marketSlug: string, errandId: string, _prev: AcceptState, form: FormData): Promise<AcceptState> {
-  const { account, market } = await requireAccount(locale, marketSlug, `/${locale}/${marketSlug}/runner/errands/${errandId}`);
+  const { account, market } = await requireVerifiedPhone(locale, marketSlug, `/${locale}/${marketSlug}/runner/errands/${errandId}`);
   const t = await getTranslations({ locale });
   const seen = String(form.get('price') ?? '');
   if (!/^\d+$/.test(seen)) return { error: t('common.error') };
@@ -34,7 +34,7 @@ export async function acceptAction(locale: string, marketSlug: string, errandId:
 }
 
 export async function askAction(locale: string, marketSlug: string, errandId: string): Promise<void> {
-  const { account } = await requireAccount(locale, marketSlug, `/${locale}/${marketSlug}/runner/errands/${errandId}`);
+  const { account } = await requireVerifiedPhone(locale, marketSlug, `/${locale}/${marketSlug}/runner/errands/${errandId}`);
   let conversationId: string;
   try {
     conversationId = await startQuestionThread(defaultDb(), account.id, errandId);

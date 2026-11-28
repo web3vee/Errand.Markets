@@ -48,7 +48,7 @@ describe('a market spanning several countries', () => {
       const u = await makeUser('XW');
       const [row] = await db().select({ phone: users.phoneE164, marketId: users.marketId }).from(users).where(eq(users.id, u.id));
       expect(row!.marketId).toBe((await market('XW')).id);
-      const p = parseMarketPhone(row!.phone, ['SN', 'CI']);
+      const p = parseMarketPhone(row!.phone!, ['SN', 'CI']);
       if (p.ok) seen.add(p.country);
     }
     expect([...seen].sort()).toEqual(['CI', 'SN']);

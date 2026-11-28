@@ -17,13 +17,17 @@ export async function POST(req: Request) {
   const secret = process.env.SUPABASE_AUTH_SMS_HOOK_SECRET;
   if (!secret) return NextResponse.json({ error: { http_code: 500, message: 'hook not configured' } }, { status: 500 });
   const raw = await req.text();
-  let payload: { user?: { phone?: string }; sms?: { otp?: string } };
+  let payload: { user?: { phone?: string; phone_change?: string }; sms?: { otp?: string } };
   try {
     payload = new Webhook(secret.replace(/^v1,whsec_/, '')).verify(raw, Object.fromEntries(req.headers)) as typeof payload;
   } catch {
     return NextResponse.json({ error: { http_code: 401, message: 'invalid signature' } }, { status: 401 });
   }
-  const phone = payload.user?.phone ? `+${payload.user.phone.replace(/^\+/, '')}` : null;
+  // Phone sign-in: the code goes to user.phone. A Google account adding a phone (Supabase phone
+  // change): user.phone is still empty and the new number is in user.phone_change (UNVERIFIED field
+  // name — confirm against a real Supabase project before launch).
+  const rawPhone = payload.user?.phone || payload.user?.phone_change;
+  const phone = rawPhone ? `+${rawPhone.replace(/^\+/, '')}` : null;
   const otp = payload.sms?.otp;
   if (!phone || !otp) return NextResponse.json({ error: { http_code: 400, message: 'missing phone or otp' } }, { status: 400 });
   const country = phoneCountry(phone);

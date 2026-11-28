@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { hasActiveRole } from '@/modules/identity/domain/policy';
 import { listServiceAreas } from '@/modules/identity/service';
-import { defaultDb, requireAccount } from '@/server/context';
+import { defaultDb, requireVerifiedPhone } from '@/server/context';
 import { Container } from '@/ui/primitives/container';
 import { saveRunnerProfile } from '../actions';
 import { RunnerProfileForm } from './form';
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function RunnerProfile({ params }: { params: Promise<{ locale: string; market: string }> }) {
   const { locale, market: slug } = await params;
   setRequestLocale(locale);
-  const { account, market } = await requireAccount(locale, slug, `/${locale}/${slug}/runner/profile`);
+  const { account, market } = await requireVerifiedPhone(locale, slug, `/${locale}/${slug}/runner/profile`);
   if (!hasActiveRole(account.roles, 'runner') || !account.runner) redirect(`/${locale}/${slug}/account`);
   const t = await getTranslations();
   const areas = (await listServiceAreas(defaultDb(), market.id)).map((a) => ({ id: a.id, name: localized(a.name, locale) }));
